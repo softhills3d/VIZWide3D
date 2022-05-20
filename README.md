@@ -1,2 +1,2 @@
 # VIZWide3D
-SOFTHILLS VIZWide3D
+VIZWide3D examples and showcases
