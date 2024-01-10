@@ -2,71 +2,83 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>VIZWide3D :: SOFTHILLS</title>
+    <title>VIZWebCore :: SOFTHILLS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="VIZCore/lib/jquery/jquery-3.2.1.js"></script>
+    
     <link rel="stylesheet" href="VIZCore/Resource/css/VIZCore.css">
-    <!-- UI BootStrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 
-    <!-- JavaScript ES6 Module -->
+
     <script type="module">
-        import VIZWide3D from "./VIZCore/VIZCore.js";
+        import VIZ3DCore from "./VIZCore/VIZCore.js";
         import { VIZCore } from "./VIZCore/VIZCore.js";
 
-        // Example Modules
-        import Model_Example from "./common/examples/Model_Example.js";
-
-        // VIZWide3D Initialize
         let view = document.getElementById("view");
         view.className = "VIZCore";
-        let vizwide3d = new VIZWide3D(view);
-        let initresult = vizwide3d.Init();
+        let vizcore = new VIZ3DCore(view);
 
-        vizwide3d.Model.OpenHeader("model/toycar/toycar_wh.vizw");
+        let onSelectEvent = function (event) {
+            // 선택된 모델이 없음
+            if (event.data.id == -1) {
+                //alert('선택된 모델이 없거나, 기존 선택상태가 해제됨.');
+            }
+            // 선택된 모델이 있음
+            else {
+                //console.log(event.data.id);
+            }
+        };
 
+        // 파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = function (e, loadType) {
+            console.log("Loading Completed :: ", e);
+            if(loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE){
+                console.log("onLoad Structure :: ", e);
+                // 구조정보 로딩 완료
+            }
+            if(loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH){
+                console.log("onLoad Mesh :: ", e);
+                // 모델정보 로딩 완료
+            }           
+        };
 
-        // Exmaples Init Code
-        {
-            document.querySelector('#Model').addEventListener('click', () => {
-                const Model = new Model_Example(vizwide3d);
-            });
+        let onConfiguration =()=>{
+            // 초기 환경설정 변경
+            //vizcore.Main.Configuration.Default.Path = "../";
+        };
 
-        }
-        
+        let onBefore =()=>{
+            // WebAssembly 다운로드 경로 지정
+            // vizcore.Main.ShdCore.setPath("../", 'VIZCore/lib/shdcore/shdcore.wasm');
+        };
+
+        let onInit = ()=>{
+
+            // Toolbar 사용
+            let toolbar = new vizcore.Toolbar(view, vizcore, VIZCore);
+
+            // ContextMenu 사용
+            let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
+
+            // Add Event Handler : Object Selected Event (모델 선택 이벤트)
+            vizcore.Object3D.OnObject3DSelected(onSelectEvent);
+
+            // 파일 열기
+            vizcore.Model.OpenHeader("VIZCore/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+            
+        };
+
+        let option = {
+                event : {
+                    onInit : onInit,
+                    onBefore : onBefore,
+                    onConfiguration : onConfiguration,
+                }
+            }
+
+        vizcore.Init(option);
     </script>
 </head>
 <body>
     <div id="view"></div>
-
-    <!-- UI -->
-    <nav class="navbar navbar-expand-lg bg-light bg-opacity-50 w-80 m-lg-2 rounded" style="z-index: 3;">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#"><img src="common/img/VIZWide3D.png" style="width: 35px; height: 35px;"></a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Example
-                </a>
-                <ul class="dropdown-menu bg-light bg-opacity-50">
-                  <li><a class="dropdown-item" id="Model" href="#">Model</a></li>
-                  <li><a class="dropdown-item" href="#">Model Tree</a></li>
-                  <li><a class="dropdown-item" href="#">Toolbar</a></li>
-                  <li><a class="dropdown-item" href="#">Context Menu</a></li>
-                </ul>
-              </li>
-              <li class="nav-item" style="margin-left: 5px;">
-                <a class="nav-link" href="https://www.softhills.net/SHDC/VIZWide3D/" target="_blank">Docs</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-    </nav>
-    
 </body>
 </html>
