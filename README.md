@@ -17,26 +17,26 @@
 ---
 
 ## Examples
-| 기능            | 샘플 파일  | 출력 형태  | 세부 기능           | 콜백 함수                   | 기능 설명                                                      |
+| 기능            | 샘플 파일 (.html)  | 출력 형태  | 세부 기능           | 콜백 함수                   | 기능 설명                                                      |
 | ------------- | ------------------------ | ----------- | --------------- | ----------------------- | ---------------------------------------------------------- |
-| Initialize    | index_initialize.html    |             | 초기화                | onInit                        |초기화                                                           |
-| Configuration | index_configuration.html |             | 초기 환경 설정 변경 | onConfiguration         | 초기 환경에 설정된 값을 변경                                           |
-| File          | index_file.html          | View        | 파일 열기           | cbOpenFile              | 파일 열기                                                      |
+| Initialize    | index_initialize    |             | 초기화                | onInit                        |초기화                                                           |
+| Configuration | index_configuration |             | 초기 환경 설정 변경 | onConfiguration         | 초기 환경에 설정된 값을 변경                                           |
+| File          | index_file          | View        | 파일 열기           | cbOpenFile              | 파일 열기                                                      |
 |               |                          | View        | 모델 닫기           | cbClose                 | 파일 닫기                                                      |
 |               |                          | View        | 파일 추가           | cbAddFiles              | 파일 추가                                                      |
 |               |                          | Console log | 이벤트             | cbModelLoadingCompleted | 파일 로딩 완료 시점 로그 출력                                          |
-| Object        | index_object.html        | Console log | 노드 반환           | cbGetNodeByName         | 특정 'keyword'로 검색 반환된 노드 로그 출력                              |
+| Object        | index_object        | Console log | 노드 반환           | cbGetNodeByName         | 특정 'keyword'로 검색 반환된 노드 로그 출력                              |
 |               |                          | View        | 노드 선택           | cbSelectNodes           | 특정 'keyword'의 노드 선택                                        |
 |               |                          | Console log | 모델 선택 이벤트       | cbSelectNodeEvent       | 선택된 object 노드 로그 출력                                        |
-| Color         | index_color.html         | View        | 노드 색상 변경        | cbSetColor              | 특정 노드 색상 변경                                                |
+| Color         | index_color         | View        | 노드 색상 변경        | cbSetColor              | 특정 노드 색상 변경                                                |
 |               |                          | View        | 노드 색상 초기화       | cbClearColor            | 특정 노드 색상 초기화                                               |
 |               |                          | View        | 전체 색상 초기화       | cbClearAll              | 전체 색상 초기화                                                  |
-| Property      | index_property.html      | Console log | 전체 속성 맵 반환      | cbGetAllPropertyMap     | 모델 전체 속성 맵 반환                                              |
+| Property      | index_property      | Console log | 전체 속성 맵 반환      | cbGetAllPropertyMap     | 모델 전체 속성 맵 반환                                              |
 |               |                          | Console log | 노드 속성 반환        | cbGetProperty           | 특정 노드의 속성 정보 반환                                            |
 |               |                          | View        | 속성에 해당해는 개체 선택  | cbSelectNode            | 특정 속성에 해당하는 개체 선택                                          |
-| Review        | index_review.html        | View        | 리뷰 저장           | cbSaveReview            | 리뷰 (노트, 측정, 스냅샷) 저장 후 json 출력                              |
+| Review        | index_review        | View        | 리뷰 저장           | cbSaveReview            | 리뷰 (노트, 측정, 스냅샷) 저장 후 json 출력                              |
 |               |                          | View        | 리뷰 불러오기         | cbOpenReview            | json 리뷰 열기                                                 |
-| Camera        | index_camera.html        | View        | +X              | cbSetCameraPlusX        | +X 카메라 설정                                                  |
+| Camera        | index_camera        | View        | +X              | cbSetCameraPlusX        | +X 카메라 설정                                                  |
 |               |                          | View        | \-X             | cbSetCameraMinusX       | \-X 카메라 설정                                                 |
 |               |                          | View        | +Y              | cbSetCameraPlusY        | +Y 카메라 설정                                                  |
 |               |                          | View        | \-Y             | cbSetCameraMinusY       | \-Y 카메라 설정                                                 |
@@ -46,17 +46,17 @@
 |               |                          | View        | \-ISO           | cbSetCameraMinusISO     | \-ISO 카메라 설정                                               |
 |               |                          | View        | Matrix 카메라 설정   | cbSetCameraData         | Matrix를 구성해 카메라를 설정                                        |
 |               |                          | Console log | 카메라 정보 반환       | cbGetCameraData         | 카메라 정보 반환                                                  |
-| Search        | index_search.html        | Console log | 노드 검색           | cbFindNode              | QuickSearch (Full match : false) - 특정 keyword 검색된 노드 로그 출력|
+| Search        | index_search        | Console log | 노드 검색           | cbFindNode              | QuickSearch (Full match : false) - 특정 keyword 검색된 노드 로그 출력|
 |               |                          | Console log | 검색어 일치          | cbFindNodeKeywordMatch  | QuickSearch (Full match : true)- 특정 keyword 검색된 노드 로그 출력|
 |               |                          | Console log | 속성 포함           | cbIncludeProperty       | 특정 Property 검색된 노드 로그 출력              |
-| Note          | index_note.html          | View        | Surface Note 생성 | cbAddSurfaceNote        | Surface Note 생성                                            |
+| Note          | index_note          | View        | Surface Note 생성 | cbAddSurfaceNote        | Surface Note 생성                                            |
 |               |                          | View        | 3D Note 생성      | cbAdd3DNote             | 3D Note 생성                                                 |
 |               |                          | View        | 2D Note 생성      | cbAdd2DNote             | 2D Note 생성                                                 |
 |               |                          | View        | Surface Note 수정 | cbChangeSurfaceNote     | Surface Note 수정                                            |
 |               |                          | View        | 3D Note 수정      | cbChange3DNote          | 3D Note 수정                                                 |
 |               |                          | View        | 2D Note 수정      | cbChange2DNote          | 2D Note 수정                                                 |
 |               |                          | Console log | Note 선택 이벤트     | cbSelectNote            | 선택된 Note의 정보 출력                                            |
-| Clipping      | index_clipping.html      | View        | X축 단면 생성        | cbClippingXAxis         | X축 단면 생성                                                   |
+| Clipping      | index_clipping      | View        | X축 단면 생성        | cbClippingXAxis         | X축 단면 생성                                                   |
 |               |                          | View        | Y축 단면 생성        | cbClippingYAxis         | Y축 단면 생성                                                   |
 |               |                          | View        | Z축 단면 생성        | cbClippingZAxis         | Z축 단면 생성                                                   |
 |               |                          | View        | 선택 상자 단면 생성     | cbClippingSelectBox     | 선택한 모델을 기준으로 박스 단면 생성                                      |
