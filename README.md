@@ -19,7 +19,7 @@
 ## Examples
 | 기능            | 샘플 파일  | 출력 형태  | 세부 기능           | 콜백 함수                   | 기능 설명                                                      |
 | ------------- | ------------------------ | ----------- | --------------- | ----------------------- | ---------------------------------------------------------- |
-| Initialize    | index_initialize.html&    |             | 초기화                | onInit                        |초기화                                                           |
+| Initialize    | index_initialize.html    |             | 초기화                | onInit                        |초기화                                                           |
 | Configuration | index_configuration.html |             | 초기 환경 설정 변경 | onConfiguration         | 초기 환경에 설정된 값을 변경                                           |
 | File          | index_file.html          | View        | 파일 열기           | cbOpenFile              | 파일 열기                                                      |
 |               |                          | View        | 모델 닫기           | cbClose                 | 파일 닫기                                                      |
