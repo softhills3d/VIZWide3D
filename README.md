@@ -12,3 +12,11 @@ GitGub/VIZWide3D
     3. model   : 예제에 활용되는 모델(*.vizw) 파일  
   
 shdcore 에러 = ./VIZCore/lib/shdcore/shdcore.js 파일에서 wasmBinaryFile 검색 후 경로 수정
+
+# Examples
+| 기능 | 샘플 파일 | 출력 형태 | 세부 기능 | 콜백 함수 | 기능 설명 |
+| ------------ | ------------- | ------------- |------------- |------------- |------------- |
+| Object   | index_object.html   | Console log    |노드 반환    |cbGetNodeByName  |특정 'keyword'로 검색 반환된 노드 로그 출력  |
+|  |   | View |노드 선택    |cbSelectNodes  |특정 'keyword'의 노드 선택  |
+| Object   | index_object.html   | Console log    |노드 반환    |cbGetNodeByName  |특정 'keyword'로 검색 반환된 노드 로그 출력  |
+|  |   | View |노드 선택    |cbSelectNodes  |특정 'keyword'의 노드 선택  |
