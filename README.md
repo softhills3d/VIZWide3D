@@ -3,9 +3,9 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsofthills3d%2FVIZWide3D&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 ## 개요
-초대형 3D 모델을 Chrome , Edge 웹 브라우저에서의 가시화 모듈인 VIZWide3D에 대한 기본 사용 예제 및 활용 코드를 공유하기 위한 목적입니다.
+초대형 3D 모델을 웹 브라우저에서의 가시화 모듈인 VIZWide3D에 대한 기본 사용 예제 및 활용 코드를 공유하기 위한 목적입니다.
 
-상세 API에 대한 설명 및 예제는 SHDC (https://www.softhills.net/SHDC) 를 참고 하시기 바랍니다.
+상세 API에 대한 설명 및 예제는 Softhills Documentation Center (https://www.softhills.net/SHDC) 를 참고 하시기 바랍니다.
 
 ---
 ## 구성
