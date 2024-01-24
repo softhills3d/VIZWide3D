@@ -10,7 +10,7 @@
 ---
 ## 구성
 +  VIZCore : VIZWide3D 배포폴더 ( 배포 받아서 사용 )
-    - MODEL : 예제에 활용되는 모델(*.vizw) 파일
+    - MODEL : 예제에 활용되는 모델(*.vizw) 파일, 리뷰(.json)파일
     - UIHeaderBar : 예제에 활용되는 상단 Header 버튼을 위한 UI
 +  html : 웹 페이지로 하위 Examples 설명 참고
 
