@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>VIZWebCore :: SOFTHILLS</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+    <script src="VIZCore/lib/jquery/jquery-3.2.1.js"></script>
+
+    <link rel="stylesheet" href="VIZCore/Resource/css/VIZCore.css">
+
+    <script type="module">
+        import VIZ3DCore from "./VIZCore/VIZCore.js";
+        import { VIZCore } from "./VIZCore/VIZCore.js";
+        import UIHeaderBar from "./VIZCore/UIHeaderBar.js";
+
+        let view = document.getElementById("view");
+        view.className = "VIZCore";
+        let vizcore = new VIZ3DCore(view);
+
+        // 파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = function (e, loadType) {
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
+                console.log("onLoad Structure :: ", e);
+                // 구조정보 로딩 완료
+            }
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
+                console.log("onLoad Mesh :: ", e);
+                // 모델정보 로딩 완료
+            }
+
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.HEADER) {
+                console.log("onLoad Header :: ", e);
+                //모델 로딩완료
+            }
+        };
+
+        let onConfiguration = () => {
+            // 초기 환경설정 변경
+            //vizcore.Main.Configuration.Default.Path = "../";
+        };
+
+        let onBefore = () => {
+            // WebAssembly 다운로드 경로 지정
+            // vizcore.Main.ShdCore.setPath("../", 'VIZCore/lib/shdcore/shdcore.wasm');
+        };
+
+        // Event : OnSelectedEvent
+        let cbSelectNote = function (event) {
+            console.log(event.data);
+        }
+
+
+        let toolbar = undefined;
+
+        let onInit = () => {
+            // Toolbar 사용
+            toolbar = new vizcore.Toolbar(view, vizcore, VIZCore);
+
+            // ContextMenu 사용
+            let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
+
+            vizcore.Model.OpenHeader("VIZCore/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+
+            ///상단 Header 테스트 버튼들
+            createTestHeader();
+        };
+
+
+        let createTestHeader = () => {
+
+            let header = new UIHeaderBar(vizcore);
+            header.Init();
+
+            header.AddButton("버튼 추가", cbAddButton);
+            header.AddButton("서브 버튼 추가", cbAddSubButton);
+            header.AddButton("버튼 숨기기", cbHideButton);
+        }
+
+        // 버튼 object 생성
+        let createButtonObj = () => {
+
+            ///버튼의 Callback Function
+            let cbSetColor = () => {
+                let Keyword = "toycar_axle_assy";
+                let nodes = vizcore.Object3D.Find.GetNodeByName(
+                    Keyword   // Keyword
+                    , true     // Full Match
+                );
+
+                let nodeIds = [];
+                for (let i = 0; i < nodes.length; i++) {
+                    nodeIds.push(nodes[i].id)
+                }
+
+                let bodyIds = vizcore.Object3D.GetBodyIdsByNodeID(nodeIds);
+
+                //색상 변경 
+                vizcore.Object3D.Color.SetColorByBodyID(bodyIds, new VIZCore.Color(255, 125, 0, 255));
+
+                //[To Do] 화면 다시그리기 호출 
+                vizcore.Render();
+            }
+
+
+            //신규 버튼 object 생성
+            let button = toolbar.GetButtonObj();
+            button.id = "button";                               //button id
+            button.tooltip = "특정 노드 색상 변경"                //button tooltip
+            button.checked = false;                              //button checked
+            button.imagesrc = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAAChUlEQVRYhe2XsWsUQRTGP0VyVS4RjM0ZCPEK4wo5EU1h4WJIITarFoKgnrWwJrB/wNnYuMVlIY2NMUUghbKNZeBsBBXhAi6JECUhXpOkuJxVqpM3zK6zs7Pn7u3FQ/CD5fbNzcz7zXtvZu6Otdtt9FPH++r9nwfQbGdYsx09yxypakCznRKAMgByOqnosg2gRo9nmYs9A+CrrAC4lpgWOABQ9SyzkglAs50qgCe+fe70CKaL43C9dTQOWkG/wlAehjaB1c3v2NjdE6dYo6h5lllPBUD5BeCKq748egaLd28Hfcorb/Bp5wdz/vrBPQzmBli76b7F6uY3ORq6CqJTEVblkF8ZLUBl08p952BROiXPNQRAWRNKAM12ZgE8lNsbrVbI3tjdZ58fdxod+3FNarYTqYdICnjotzh1RMaFCRTyeebE/bIefD1dPMtWLrdLolSMeZbZ9JtPKDrN+s4Hczk8vjrFHC68/8CKK25yyrmY95hipXkNMR1xAEzPbszgenGcvVMBzrx4iZ+Hh3GrC0XDMW6y9/uXLuLO0rIIoYsAoRrg+z0IPUXg9/sAW1USiUVI46hIBY2JhlyEJdGgLebr695+yO4kOUp0NsRJTsGwaFDeaTBFQjpcOmrpcz2IIO0UaWxTNFQ1EFIax6J8CIVcselv/x7Yli8pGWDriAHKcoMMUDsix3QA3fIsMzJ/CMCzTIrAux47fsVPP1fVQVWEkUsooaOKZ5nVtITK61iznVpKiLlunJPidoHBV5VUpRR9/wzAbys9BYTRUwAOUecQawnmUV7dmQAkiKfdOsgEwCGa/JftSSo2xTalND3qmoB2QbfP+efzepbx9Pz/c9pfAAC/AMXbRjT+9sJTAAAAAElFTkSuQmCC';
+            button.callback = cbSetColor;                       //button callback
+
+            return button;
+        }
+
+
+        /* Toolbar Callback Function*/
+        // 버튼 추가
+        let cbAddButton = () => {
+
+            //버튼 생성
+            let button = createButtonObj();
+
+            //신규 버튼 추가
+            toolbar.AddButton([button]);
+        }
+
+        // 서브 버튼 추가 
+        let cbAddSubButton = () => {
+
+            //버튼 생성
+            let button = createButtonObj();
+
+            //추가할 상위 버튼의 id
+            let parentButtonId = vizcore.Main.GetViewID() + "ui_color";
+
+            //신규 서브 버튼 추가
+            //* parentButtonId : 추가할 상위 버튼의 id 
+            //* button: 추가할 button object
+            //* 1(index): 몇번째 위치에 추가할지 (default로 마지막에 추가)
+            toolbar.AddSubButton(parentButtonId, button, 1);
+        }
+
+        // 버튼 숨기기
+        let cbHideButton = () => {
+            //"ui_config_visible" id를 가진 버튼 숨기기
+            let buttonId = vizcore.Main.GetViewID() + "ui_config_visible";
+            toolbar.ShowButton(buttonId, false);
+        }
+
+
+        let option = {
+            event: {
+                onInit: onInit,
+                onBefore: onBefore,
+                onConfiguration: onConfiguration,
+            }
+        }
+
+        vizcore.Init(option);
+    </script>
+</head>
+
+<body>
+    <div id="view"></div>
+</body>
+
+</html>

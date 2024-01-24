@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>VIZWebCore :: SOFTHILLS</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+    <script src="VIZCore/lib/jquery/jquery-3.2.1.js"></script>
+
+    <link rel="stylesheet" href="VIZCore/Resource/css/VIZCore.css">
+
+    <script type="module">
+        import VIZ3DCore from "./VIZCore/VIZCore.js";
+        import { VIZCore } from "./VIZCore/VIZCore.js";
+        import UIHeaderBar from "./VIZCore/UIHeaderBar.js";
+
+        let view = document.getElementById("view");
+        view.className = "VIZCore";
+        let vizcore = new VIZ3DCore(view);
+
+        // 파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = function (e, loadType) {
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
+                console.log("onLoad Structure :: ", e);
+                // 구조정보 로딩 완료
+            }
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
+                console.log("onLoad Mesh :: ", e);
+                // 모델정보 로딩 완료
+            }
+
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.HEADER) {
+                console.log("onLoad Header :: ", e);
+                //모델 로딩완료
+            }
+        };
+
+        let onConfiguration = () => {
+            // 초기 환경설정 변경
+            //vizcore.Main.Configuration.Default.Path = "../";
+        };
+
+        let onBefore = () => {
+            // WebAssembly 다운로드 경로 지정
+            // vizcore.Main.ShdCore.setPath("../", 'VIZCore/lib/shdcore/shdcore.wasm');
+        };
+
+        // Event : OnSelectedEvent
+        let cbSelectNote = function (event) {
+            console.log(event.data);
+        }
+
+
+        let context = undefined;
+
+        let onInit = () => {
+            // Toolbar 사용
+            let toolbar = new vizcore.Toolbar(view, vizcore, VIZCore);
+
+            // ContextMenu 사용
+            context = new vizcore.ContextMenu(view, vizcore, VIZCore);
+
+            vizcore.Model.OpenHeader("VIZCore/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+
+            ///상단 Header 테스트 버튼들
+            createTestHeader();
+        };
+
+
+        let createTestHeader = () => {
+
+            let header = new UIHeaderBar(vizcore);
+            header.Init();
+
+            header.AddButton("메뉴 추가", cbAddMenu);
+            header.AddButton("메뉴 숨기기", cbHideMenu);
+        }
+
+        // 메뉴 object 생성
+        let createMenuObj = () => {
+
+            ///메뉴의 Callback Function
+            let cbSetColor = () => {
+                let Keyword = "toycar_axle_assy";
+                let nodes = vizcore.Object3D.Find.GetNodeByName(
+                    Keyword   // Keyword
+                    , true     // Full Match
+                );
+
+                let nodeIds = [];
+                for (let i = 0; i < nodes.length; i++) {
+                    nodeIds.push(nodes[i].id)
+                }
+
+                let bodyIds = vizcore.Object3D.GetBodyIdsByNodeID(nodeIds);
+
+                //색상 변경 
+                vizcore.Object3D.Color.SetColorByBodyID(bodyIds, new VIZCore.Color(255, 125, 0, 255));
+
+                //[To Do] 화면 다시그리기 호출 
+                vizcore.Render();
+            }
+
+
+            //신규 메뉴 object 생성
+            let menu = context.GetContextMenuObj();
+            menu.id = "newmenu";                               //contextmenu  id
+            menu.text = "특정 노드 색상 변경";                  //contextmenu text
+            menu.callback = cbSetColor;                       //contextmenu  callback
+
+            return menu;
+        }
+
+
+        /* ContextMenu Callback Function*/
+        // 메뉴 추가
+        let cbAddMenu = () => {
+
+            //메뉴 생성
+            let menu = createMenuObj();
+
+            //신규 메뉴 추가
+            context.AddContextMenu([menu]);
+        }
+    
+        // 메뉴 숨기기
+        let cbHideMenu = () => {
+            //"menu_ShowAll" id를 가진 메뉴 숨기기 
+            let menuId = vizcore.Main.GetViewID() + "menu_ShowAll";
+            context.ShowContextMenu(menuId, false);
+        }
+
+
+        let option = {
+            event: {
+                onInit: onInit,
+                onBefore: onBefore,
+                onConfiguration: onConfiguration,
+            }
+        }
+
+        vizcore.Init(option);
+    </script>
+</head>
+
+<body>
+    <div id="view"></div>
+</body>
+
+</html>
