@@ -21,6 +21,11 @@
 | ------------- | ------------------------ | ----------- | --------------- | ----------------------- | ---------------------------------------------------------- |
 | Initialize    | index_initialize    |             | 초기화                | onInit                        |초기화                                                           |
 | Configuration | index_configuration |             | 초기 환경 설정 변경 | onConfiguration         | 초기 환경에 설정된 값을 변경                                           |
+| Toolbar | index_toolbar |View        |버튼 추가  | cbAddButton         | toolbar에 버튼 추가                                           |
+|  |  |View        |서브 버튼 추가  | cbAddSubButton         | toolbar에 서브 버튼 추가                                           |
+|  |  |View        |버튼 숨기기  | cbHideButton         | toolbar에 버튼 숨기기                                           |
+| ContextMenu | index_contextmenu |View        |메뉴 추가  | cbAddMenu         | contextmenu에 메뉴 추가                                           |
+|  |  |View        |메뉴 숨기기  | cbHideMenu         | contextmenu에 메뉴 숨기기                                           |
 | File          | index_file          | View        | 파일 열기           | cbOpenFile              | 파일 열기                                                      |
 |               |                          | View        | 모델 닫기           | cbClose                 | 파일 닫기                                                      |
 |               |                          | View        | 파일 추가           | cbAddFiles              | 파일 추가                                                      |
