@@ -10,6 +10,31 @@
 
     <link rel="stylesheet" href="VIZCore/Resource/css/VIZCore.css">
 
+    <style> /*상단 Header 테스트 버튼 스타일*/
+        .headerBar {
+            width: 100%;
+            height: 50px;
+            top: 0px;
+            left: 0px;
+        }
+
+        .ui_button_header {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 13px;
+            text-align: center;
+            border-radius: 5px;
+            color: rgb(0, 0, 0);
+            height: 25px;
+            border: 1px solid rgba(0, 13, 14, 0.377);
+            cursor: pointer;
+            margin-left: 10px;
+            padding: 0 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
     <script type="module">
         import VIZ3DCore from "./VIZCore/VIZCore.js";
         import { VIZCore } from "./VIZCore/VIZCore.js";
@@ -42,7 +67,7 @@
         };
 
         let onBefore = () => {
-        };
+                    };
 
         // Event : OnSelectedEvent
         let cbSelectNote = function (event) {
