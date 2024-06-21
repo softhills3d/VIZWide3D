@@ -5,20 +5,20 @@
 ## 개요
 초대형 3D 모델을 웹 브라우저에서의 가시화 모듈인 VIZWide3D에 대한 기본 사용 예제 및 활용 코드를 공유하기 위한 목적입니다.
 
-상세 API에 대한 설명 및 예제는 VIZWide3D Document (https://www.softhills.net/SHDC/VIZWide3D/vizwide3d.html) 를 참고 하시기 바랍니다.
+상세 API에 대한 설명 및 예제는 VIZWide3D Document ( https://www.softhills.net/SHDC/VIZWide3D/vizwide3d.html ) 를 참고 하시기 바랍니다.
 
 ---
 ## 시작하기 
-1. VIZCore3D를 해당 파일에 적용(※VIZCore3D 파일은 별도로 받아서 적용해야 합니다.)
+1. VIZCore3D를 해당 파일에 적용 ( ※VIZCore3D 파일은 별도로 받아서 적용해야 합니다. )
 
-2. 샘플 파일(.html)들을 실행시켜 해당 예제의 작동을 확인
+2. 샘플 파일(.html) 들을 실행시켜 해당 예제의 작동을 확인
 ---
 ## 구성
-+  VIZCore3D : VIZWide3D 배포폴더 ( 배포 받아서 사용 )
++  VIZCore3D : VIZWide3D 배포 폴더 ( 배포 받아서 사용 )
     - MODEL : 예제에 활용되는 모델(*.vizw) 파일,
     - Resource/js/UISideBar.js : 예제에 활용되는 좌측 NavigationBar UI
     - Resource/css/UISideBar.css : 예제에 활용되는 좌측 NavigationBar UI의 css파일
-    - Resource/Review/Data.json : index_review.html 예제에서 활용 되는 리뷰(.json)파일
+    - Resource/Review/Data.json : index_review.html 예제에서 활용되는 리뷰(.json)파일
 +  html : 웹 페이지로 하위 Examples 설명 참고
 
 ---
