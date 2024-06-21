@@ -6,54 +6,46 @@
     <title>VIZWebCore :: SOFTHILLS</title>
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
-    <script src="VIZCore/lib/jquery/jquery-3.2.1.js"></script>
+    <script src="VIZCore3D/lib/jquery/jquery-3.2.1.js"></script>
 
-    <link rel="stylesheet" href="VIZCore/Resource/css/VIZCore.css">
+    <link rel="stylesheet" href="VIZCore3D/Resource/css/VIZCore.css">
 
-    <style> /*상단 Header 테스트 버튼 스타일*/
-        .headerBar {
-            width: 100%;
-            height: 50px;
-            top: 0px;
-            left: 0px;
-        }
-
-        .ui_button_header {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 13px;
-            text-align: center;
-            border-radius: 5px;
-            color: rgb(0, 0, 0);
-            height: 25px;
-            border: 1px solid rgba(0, 13, 14, 0.377);
-            cursor: pointer;
-            margin-left: 10px;
-            padding: 0 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <!-- 예제 UI css -->
+    <link rel="stylesheet" href="./Resource/css/UISideBar.css">
 
     <script type="module">
-        import VIZ3DCore from "./VIZCore/VIZCore.js";
-        import { VIZCore } from "./VIZCore/VIZCore.js";
-        import UIHeaderBar from "./VIZCore/UIHeaderBar.js";
+        import VIZ3DCore from "./VIZCore3D/VIZCore.js";
+        import { VIZCore } from "./VIZCore3D/VIZCore.js";
+        import UISideBar from "./Resource/js/UISideBar.js";
 
         let view = document.getElementById("view");
         view.className = "VIZCore";
         let vizcore = new VIZ3DCore(view);
 
+        let onSelect;
 
-        // 파일 로딩 완료 시점 확인
-        let onModelLoadingCompleted = function (e, loadType) {
+        let onSelectEvent = (event) => {
+            //선택된 모델이 없음
+            if (event.data.id == -1) {
+                //alert('선택된 모델이 없거나, 기존 선택상태가 해제됨.');
+                onSelect = false;
+            }
+            //선택된 모델이 있음
+            else {
+                onSelect = true;
+
+            }
+        };
+
+        //파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = (e, loadType) => {
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
                 console.log("onLoad Structure :: ", e);
-                // 구조정보 로딩 완료
+                //구조정보 로딩 완료
             }
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
                 console.log("onLoad Mesh :: ", e);
-                // 모델정보 로딩 완료
+                //모델정보 로딩 완료
             }
 
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.HEADER) {
@@ -63,78 +55,92 @@
         };
 
         let onConfiguration = () => {
-            // 초기 환경설정 변경
+            //초기 환경설정 변경
             //vizcore.Main.Configuration.Default.Path = "../";
-
-            //단면 Style 변경
-            vizcore.Main.Configuration.Section.Style.Color = new VIZCore.Color(201, 236, 75, 255);
-            vizcore.Main.Configuration.Section.Style.LineColor = new VIZCore.Color(255, 255, 255, 1);
+            //WebAssembly 경로 설정
+            //vizcore.Configuration.Default.WebAssembly.Path = "../";
         };
 
         let onBefore = () => {
-                    };
-
-        let onInit = () => {
-
-            // Toolbar 사용
-            let toolbar = new vizcore.Toolbar(view, vizcore, VIZCore);
-
-            // ContextMenu 사용
-            let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
-
-            vizcore.Model.OpenHeader("VIZCore/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
-
-            ///상단 Header 테스트 버튼들
-            createTestHeader();
+            //단면 Style 변경
+            vizcore.Main.Configuration.Section.Style.Color = new VIZCore.Color(255, 0, 0, 180);
+            vizcore.Main.Configuration.Section.Style.LineColor = new VIZCore.Color(0, 255, 0, 255);
         };
 
-        let createTestHeader = () => {
+        let onInit = () => {
+            //View Info 확인
+            let OnViewDrawInfo = (event) => {
+                //console.log(event.data);
+            };
 
-            let header = new UIHeaderBar(vizcore);
-            header.Init();
+            //Add Event Handler : Object Selected Event (모델 선택 이벤트)
+            vizcore.Object3D.OnObject3DSelected(onSelectEvent);
 
-            header.AddButton("X축 단면 생성", cbClippingXAxis);
-            header.AddButton("Y축 단면 생성", cbClippingYAxis);
-            header.AddButton("Z축 단면 생성", cbClippingZAxis);
-            header.AddButton("선택 상자 단면 생성", cbClippingSelectBox);
-            header.AddButton("박스 단면 생성", cbClippingBox);
-            header.AddButton("단면 방향 전환", cbClippingInverse);
-            header.AddButton("단면 보이기/숨기기", cbShowSection);
-            header.AddButton("단면 삭제", cbClearSection);
+            vizcore.View.OnViewDrawInfoEvent(OnViewDrawInfo);
+
+            //파일 열기
+            vizcore.Model.OpenHeader("VIZCore3D/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+
+            //예제 테스트 UI 생성
+            createExample();
+        };
+
+        let createExample = () => {
+            let example = new UISideBar(vizcore);
+
+            example.Init();
+
+            example.AddTitle("단면 예제");
+
+            example.AddButton("X축 단면 생성", cbClippingXAxis);
+            example.AddButton("Y축 단면 생성", cbClippingYAxis);
+            example.AddButton("Z축 단면 생성", cbClippingZAxis);
+            example.AddButton("선택 상자 단면 생성", cbClippingSelectBox);
+            example.AddButton("박스 단면 생성", cbClippingBox);
+            example.AddButton("단면 방향 전환", cbClippingInverse);
+            example.AddButton("단면 색상 변환", cbClippingChangeColor);
+            example.AddButton("단면 보이기/숨기기", cbShowSection);
+            example.AddButton("단면 제거", cbClearSection);
+            example.AddButton("단면 ID 반환", cbGetClippingID);
         };
 
         /* Clipping Callback Function*/
-        // X축 단면 생성
+        //X축 단면 생성
         let cbClippingXAxis = () => {
             vizcore.Section.Create(VIZCore.Enum.CLIPPING_MODES.X);
         };
 
-        // Y축 단면 생성
+        //Y축 단면 생성
         let cbClippingYAxis = () => {
             vizcore.Section.Create(VIZCore.Enum.CLIPPING_MODES.Y);
         };
 
-        // Z축 단면 생성
+        //Z축 단면 생성
         let cbClippingZAxis = () => {
             vizcore.Section.Create(VIZCore.Enum.CLIPPING_MODES.Z);
         };
 
-        // 선택 상자 단면 생성
+        //선택 상자 단면 생성
         let cbClippingSelectBox = () => {
-            vizcore.Section.Create(VIZCore.Enum.CLIPPING_MODES.SELECTBOX);
+            if (onSelect) {
+                vizcore.Section.Create(VIZCore.Enum.CLIPPING_MODES.SELECTBOX);
+            } else {
+                alert('먼저 모델을 선택해주세요.');
+            }
+
         };
 
-        // 박스 단면 생성
+        //박스 단면 생성
         let cbClippingBox = () => {
             vizcore.Section.Create(VIZCore.Enum.CLIPPING_MODES.BOX);
         };
 
-        // 단면 방향 전환
+        //단면 방향 전환
         let cbClippingInverse = () => {
             vizcore.Section.Inverse();
         };
 
-        // 단면 보이기/숨기기
+        //단면 보이기/숨기기
         let cbShowSection = () => {
             //생성된 단면 ID 반환
             let sectionId = vizcore.Section.GetClipping();
@@ -146,9 +152,29 @@
             vizcore.Section.SetShow(sectionId, !isVisible);
         };
 
-        // 단면 삭제
+        //단면 색상 
+        let cbClippingChangeColor = () => {
+            //랜덤값
+            const getRandom = (min, max) => Math.random() * (max - min) + min;
+
+            //단면 Style 변경
+            vizcore.Main.Configuration.Section.Style.Color = new VIZCore.Color(getRandom(0, 255), getRandom(0, 255), getRandom(0, 255), getRandom(0, 255));
+            vizcore.Main.Configuration.Section.Style.LineColor = new VIZCore.Color(getRandom(0, 255), getRandom(0, 255), getRandom(0, 255), getRandom(0, 255));
+
+            vizcore.Render();
+            alert('색상이 변경되었습니다. 단면을 재생성해보세요.')
+        };
+
+        //단면 삭제
         let cbClearSection = () => {
             vizcore.Section.Clear();
+        };
+
+        //단면 ID 반환
+        let cbGetClippingID = () => {
+            let clipped = vizcore.Section.GetClipping();
+            console.log("단면ID 정보: " + clipped);
+            alert("개발자도구(F12)의 콘솔(Console)탭을 통해 관련 예제 결과를 확인해주세요.");
         };
 
         let option = {
@@ -157,14 +183,16 @@
                 onBefore: onBefore,
                 onConfiguration: onConfiguration,
             }
-        }
+        };
 
         vizcore.Init(option);
     </script>
 </head>
 
 <body>
-    <div id="view"></div>
+    <div class="VIZWeb_Main">
+        <div id="view"></div>
+    </div>
 </body>
 
 </html>

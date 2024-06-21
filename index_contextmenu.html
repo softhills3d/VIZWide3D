@@ -6,55 +6,35 @@
     <title>VIZWebCore :: SOFTHILLS</title>
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
-    <script src="VIZCore/lib/jquery/jquery-3.2.1.js"></script>
+    <script src="VIZCore3D/lib/jquery/jquery-3.2.1.js"></script>
 
-    <link rel="stylesheet" href="VIZCore/Resource/css/VIZCore.css">
+    <link rel="stylesheet" href="VIZCore3D/Resource/css/VIZCore.css">
 
-    <style>/*상단 Header 테스트 버튼 스타일*/
-        .headerBar {
-            width: 100%;
-            height: 50px;
-            top: 0px;
-            left: 0px;
-        }
-
-        .ui_button_header {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 13px;
-            text-align: center;
-            border-radius: 5px;
-            color: rgb(0, 0, 0);
-            height: 25px;
-            border: 1px solid rgba(0, 13, 14, 0.377);
-            cursor: pointer;
-            margin-left: 10px;
-            padding: 0 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <!-- 예제 UI css -->
+    <link rel="stylesheet" href="./Resource/css/UISideBar.css">
 
     <script type="module">
-        import VIZ3DCore from "./VIZCore/VIZCore.js";
-        import { VIZCore } from "./VIZCore/VIZCore.js";
-        import UIHeaderBar from "./VIZCore/UIHeaderBar.js";
+        import VIZ3DCore from "./VIZCore3D/VIZCore.js";
+        import { VIZCore } from "./VIZCore3D/VIZCore.js";
+        import UISideBar from "./Resource/js/UISideBar.js";
 
         let view = document.getElementById("view");
         view.className = "VIZCore";
         let vizcore = new VIZ3DCore(view);
 
-        // 파일 로딩 완료 시점 확인
-        let onModelLoadingCompleted = function (e, loadType) {
+        let OnOff;
+        let exampleMenu = undefined;
+
+        //파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = (e, loadType) => {
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
                 console.log("onLoad Structure :: ", e);
-                // 구조정보 로딩 완료
+                //구조정보 로딩 완료
             }
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
                 console.log("onLoad Mesh :: ", e);
-                // 모델정보 로딩 완료
+                //모델정보 로딩 완료
             }
-
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.HEADER) {
                 console.log("onLoad Header :: ", e);
                 //모델 로딩완료
@@ -62,100 +42,90 @@
         };
 
         let onConfiguration = () => {
-            // 초기 환경설정 변경
+            //초기 환경설정 변경
             //vizcore.Main.Configuration.Default.Path = "../";
+            //WebAssembly 경로 설정
+            //vizcore.Configuration.Default.WebAssembly.Path = "../";
         };
 
         let onBefore = () => {
-            // WebAssembly 다운로드 경로 지정
-            // vizcore.Main.ShdCore.setPath("../", 'VIZCore/lib/shdcore/shdcore.wasm');
         };
 
-        // Event : OnSelectedEvent
-        let cbSelectNote = function (event) {
+        //Event : OnSelectedEvent
+        let cbSelectNote = (event) => {
             console.log(event.data);
-        }
+        };
 
 
         let context = undefined;
 
         let onInit = () => {
-            // Toolbar 사용
-            let toolbar = new vizcore.Toolbar(view, vizcore, VIZCore);
-
-            // ContextMenu 사용
+            //ContextMenu 사용
             context = new vizcore.ContextMenu(view, vizcore, VIZCore);
 
-            vizcore.Model.OpenHeader("VIZCore/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+            vizcore.Model.OpenHeader("VIZCore3D/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
 
-            ///상단 Header 테스트 버튼들
-            createTestHeader();
+            //예제 테스트 리본 탭 생성
+            createExample();
+
+            alert("예제 작동을 확인하려면 뷰어에서 마우스 우클릭을 눌러 컨텍스트메뉴를 활성화해주세요.");
         };
 
+        let createExample = () => {
+            let example = new UISideBar(vizcore);
 
-        let createTestHeader = () => {
+            example.Init();
 
-            let header = new UIHeaderBar(vizcore);
-            header.Init();
+            example.AddTitle("컨텍스트 예제")
 
-            header.AddButton("메뉴 추가", cbAddMenu);
-            header.AddButton("메뉴 숨기기", cbHideMenu);
+            //리본 버튼 생성
+            example.AddButton("메뉴 추가", cbAddMenu);
+            example.AddButton("메뉴 숨기기", cbHideMenu);
         }
 
-        // 메뉴 object 생성
+        //메뉴 object 생성
         let createMenuObj = () => {
 
-            ///메뉴의 Callback Function
-            let cbSetColor = () => {
-                let Keyword = "toycar_axle_assy";
-                let nodes = vizcore.Object3D.Find.GetNodeByName(
-                    Keyword   // Keyword
-                    , true     // Full Match
-                );
-
-                let nodeIds = [];
-                for (let i = 0; i < nodes.length; i++) {
-                    nodeIds.push(nodes[i].id)
-                }
-
-                let bodyIds = vizcore.Object3D.GetBodyIdsByNodeID(nodeIds);
-
-                //색상 변경 
-                vizcore.Object3D.Color.SetColorByBodyID(bodyIds, new VIZCore.Color(255, 125, 0, 255));
-
-                //[To Do] 화면 다시그리기 호출 
-                vizcore.Render();
-            }
-
+            //메뉴의 Callback Function
+            let cbExFunc = () => {
+                //스테이터스바
+                let statusbar = vizcore.UIElement.GetStatusbar();
+                //스테이터스바 메시지 변경
+                statusbar.SetMessage("예제 버튼 눌림", true, vizcore.UIElement.Enum.STATUS_TYPE.NORMAL);
+            };
 
             //신규 메뉴 object 생성
             let menu = context.GetContextMenuObj();
-            menu.id = "newmenu";                               //contextmenu  id
-            menu.text = "특정 노드 색상 변경";                  //contextmenu text
-            menu.callback = cbSetColor;                       //contextmenu  callback
-
+            //contextmenu  id
+            menu.id = "newmenu";
+            //contextmenu text                  
+            menu.text = "예제 샘플";
+            //contextmenu  callback    
+            menu.callback = cbExFunc;
+            exampleMenu = menu;
             return menu;
-        }
-
+        };
 
         /* ContextMenu Callback Function*/
-        // 메뉴 추가
+        //메뉴 추가
         let cbAddMenu = () => {
-
             //메뉴 생성
             let menu = createMenuObj();
 
             //신규 메뉴 추가
             context.AddContextMenu([menu]);
-        }
-    
-        // 메뉴 숨기기
+        };
+
+        //메뉴 숨기기/보이기
         let cbHideMenu = () => {
             //"menu_ShowAll" id를 가진 메뉴 숨기기 
-            let menuId = vizcore.Main.GetViewID() + "menu_ShowAll";
-            context.ShowContextMenu(menuId, false);
-        }
-
+            if (!exampleMenu) {
+                alert("'메뉴 추가'를 눌러 예제메뉴를 추가해 주세요.");
+            } else {
+                context.ShowContextMenu(exampleMenu.id, OnOff);
+                OnOff = !OnOff;
+            }
+        };
 
         let option = {
             event: {
@@ -163,14 +133,16 @@
                 onBefore: onBefore,
                 onConfiguration: onConfiguration,
             }
-        }
+        };
 
         vizcore.Init(option);
     </script>
 </head>
 
 <body>
-    <div id="view"></div>
+    <div class="VIZWeb_Main">
+        <div id="view"></div>
+    </div>
 </body>
 
 </html>

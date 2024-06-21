@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>VIZWebCore :: SOFTHILLS</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+    <script src="VIZCore3D/lib/jquery/jquery-3.2.1.js"></script>
+
+    <link rel="stylesheet" href="VIZCore3D/Resource/css/VIZCore.css">
+
+    <!-- 예제 UI css -->
+    <link rel="stylesheet" href="./Resource/css/UISideBar.css">
+
+    <script type="module">
+        import VIZ3DCore from "./VIZCore3D/VIZCore.js";
+        import { VIZCore } from "./VIZCore3D/VIZCore.js";
+        import UISideBar from "./Resource/js/UISideBar.js";
+
+        let view = document.getElementById("view");
+        view.className = "VIZCore";
+        let vizcore = new VIZ3DCore(view);
+        let toolbar = undefined;
+
+
+        //환경조명 설정용 Boolean변수
+        let SSAO = false;
+        //환경조명 설정용 Boolean변수
+        let EvLight = false;
+        //Xray 설정용 Boolean변수
+        let Xray = false;
+
+        //파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = (e, loadType) => {
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
+                console.log("onLoad Structure :: ", e);
+                //구조정보 로딩 완료
+            }
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
+                console.log("onLoad Mesh :: ", e);
+                //모델정보 로딩 완료
+            }
+
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.HEADER) {
+                console.log("onLoad Header :: ", e);
+                //모델 로딩완료
+            }
+        };
+
+        let onConfiguration = () => {
+            //초기 환경설정 변경
+            //vizcore.Main.Configuration.Default.Path = "../";
+            //WebAssembly 경로 설정
+            //vizcore.Configuration.Default.WebAssembly.Path = "../";
+        };
+
+        let onBefore = () => {
+        };
+
+        //Event : OnSelectedEvent
+        let cbSelectNote = (event) => {
+            console.log(event.data);
+        };
+
+        let onInit = () => {
+            //ContextMenu 사용
+            let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
+
+            vizcore.Model.OpenHeader("VIZCore3D/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+
+            //예제 테스트 리본 탭 생성
+            createExample();
+        };
+
+        let createExample = () => {
+            let example = new UISideBar(vizcore);
+
+            example.Init();
+
+            example.AddTitle("화면 설정 예제")
+
+            example.AddButton("초기 화면으로", cbReSetView);
+            example.AddButton("화면을 모델에 맞춤", cbFitAllView);
+            example.AddButton("X-Ray 모드 적용", cbRenderXray);
+            example.AddButton("SSAO 설정", cbEnvironmaSSAO);
+            example.AddButton("환경 조명 설정", cbEnvironLight);
+            example.AddButton("조명 색상 변경", cbLightColor);
+            example.AddButton("평행 모드 적용", cbOrthographic);
+            example.AddButton("원근 모드 적용", cbPerspective);
+        };
+
+        /* Camera Callback Function*/
+        //Camera 설정 (+x)
+        let cbReSetView = () => {
+            vizcore.View.ResetView();
+        };
+
+        //모델 화면에 맞춤 설정
+        let cbFitAllView = () => {
+            vizcore.View.FitAll();
+        };
+
+        //렌더모드 X-ray설정
+        let cbRenderXray = () => {
+            if (Xray == false) {
+                //X-ray 적용
+                Xray = true;
+                vizcore.View.SetRenderMode(VIZCore.Enum.RENDER_MODES.Xray);
+                alert("X-ray 모드를 적용합니다.");
+            } else {
+                //X-ray 해제
+                Xray = false;
+                vizcore.View.SetRenderMode(VIZCore.Enum.RENDER_MODES.Smooth);
+                alert("X-ray 모드를 해제합니다.");
+            }
+        };
+
+        //SSAO 설정
+        let cbEnvironmaSSAO = () => {
+            if (SSAO == false) {
+                //SSAO 적용
+                SSAO = true;
+                vizcore.View.EnableSSAO(SSAO);
+                alert("SSAO를 적용합니다.");
+            } else {
+                //SSAO 해제
+                SSAO = false;
+                vizcore.View.EnableSSAO(SSAO);
+                alert("SSAO를 해제합니다.");
+            }
+        };
+
+        //환경조명 설정
+        let cbEnvironLight = () => {
+            if (EvLight == false) {
+                //환경조명 적용
+                EvLight = true;
+                vizcore.View.EnableEnvironment(!EvLight); //!EVLight = fasle (환경조명 적용)
+                alert("환경조명을 적용합니다.");
+            } else {
+                //환경조명 해제
+                EvLight = false;
+                vizcore.View.EnableEnvironment(!EvLight); //!EVLight = true (환경조명 해제)
+                alert("환경조명을 해제합니다.");
+            }
+        };
+
+        //조명 색상 변경
+        let cbLightColor = () => {
+            //랜덤값 적용
+            const getRandom = (min, max) => Math.random() * (max - min) + min;
+            vizcore.View.SetLightColor(new VIZCore.Color(getRandom(0, 255), getRandom(0, 255), getRandom(0, 255), getRandom(0, 255)));
+
+            //화면 다시 렌더링
+            vizcore.Render();
+        };
+
+        //평행 모드 적용
+        let cbOrthographic = () => {
+            vizcore.View.SetProjection(VIZCore.Enum.PROJECTION_MODES.Orthographic);
+
+            //화면 다시 렌더링
+            vizcore.Render();
+            alert("평행모드를 적용합니다.");
+        };
+
+        //원근 모드 적용
+        let cbPerspective = () => {
+            vizcore.View.SetProjection(VIZCore.Enum.PROJECTION_MODES.Perspective);
+
+            //화면 다시 렌더링
+            vizcore.Render();
+            alert("원근모드를 적용합니다.");
+        };
+
+        let option = {
+            event: {
+                onInit: onInit,
+                onBefore: onBefore,
+                onConfiguration: onConfiguration,
+            }
+        };
+
+        vizcore.Init(option);
+    </script>
+</head>
+
+<body>
+    <div class="VIZWeb_Main">
+        <div id="view"></div>
+    </div>
+</body>
+
+</html>
