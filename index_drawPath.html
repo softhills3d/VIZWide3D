@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>VIZWebCore :: SOFTHILLS</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+    <script src="VIZCore3D/lib/jquery/jquery-3.2.1.js"></script>
+
+    <link rel="stylesheet" href="VIZCore3D/Resource/css/VIZCore.css">
+
+    <!-- 예제 UI css -->
+    <link rel="stylesheet" href="./Resource/css/UISideBar.css">
+
+    <script type="module">
+        import VIZ3DCore from "./VIZCore3D/VIZCore.js";
+        import { VIZCore } from "./VIZCore3D/VIZCore.js";
+        import UISideBar from "./Resource/js/UISideBar.js";
+
+        let view = document.getElementById("view");
+        view.className = "VIZCore";
+        let vizcore = new VIZ3DCore(view);
+
+        let path = []; //변환 된 3D좌표 값을 저장할 변수
+
+        let coordinate = new vizcore.Coordinate();
+
+        //GPS 기준 설정(위경도 위치와 3D좌표가 일치 된 값)
+        coordinate.setStandardValue(0, 0, 0, 0, 50, 50, 50, 50);
+
+        let onSelectEvent = (event) => {
+            //선택된 모델이 없음
+            if (event.data.id == -1) {
+                //alert('선택된 모델이 없거나, 기존 선택상태가 해제됨.');
+            }
+            //선택된 모델이 있음
+            else {
+                //console.log(event.data.id);
+            }
+        };
+        //파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = (e, loadType) => {
+            console.log("Loading Completed :: ", e);
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
+                console.log("onLoad Structure :: ", e);
+                //구조정보 로딩 완료
+            }
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
+                console.log("onLoad Mesh :: ", e);
+                //모델정보 로딩 완료
+            }
+        };
+
+        let onConfiguration = () => {
+            //초기 환경설정 변경
+            //vizcore.Main.Configuration.Default.Path = "../";
+            //WebAssembly 경로 설정
+            //vizcore.Configuration.Default.WebAssembly.Path = "../";
+        };
+
+        let onBefore = () => {
+        };
+
+        let onInit = () => {
+            //ContextMenu 사용
+            let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
+            //Add Event Handler : Object Selected Event (모델 선택 이벤트)
+            vizcore.Object3D.OnObject3DSelected(onSelectEvent);
+            //View Info 확인
+            let OnViewDrawInfo = function (event) {
+                //console.log(event.data);
+            };
+            vizcore.View.OnViewDrawInfoEvent(OnViewDrawInfo);
+            //파일 열기
+            vizcore.Model.OpenHeader("VIZCore3D/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+
+            //예제 테스트 리본 탭 생성
+            createExample();
+        };
+
+        let createExample = () => {
+            let example = new UISideBar(vizcore);
+
+            example.Init();
+
+            example.AddTitle("경로 그리기 예제")
+
+            example.AddButton("데이터 경로 생성", drawPath);
+        };
+
+        let drawPath = () => {
+            //GPS 설정
+            let sampleGPS = [
+                { lon: -4.0, lat: -30.0 },
+                { lon: -26.0, lat: -30.0 },
+                { lon: -26.0, lat: 20.0 },
+                { lon: -4.0, lat: 20.0 },
+            ];
+
+            //위경도 좌표를 3D좌표 정보로 변환
+            for (let i = 0; i < sampleGPS.length; i++) {
+                let pos = coordinate.toCartesian(
+                    sampleGPS[i].lat * 1,
+                    sampleGPS[i].lon * 1
+                );
+                pos.z = 0; //고도 정보가 없으므로 임의 설정
+                path.push(pos); //위치값 path에 저장
+            }
+
+            //변환 된 3D좌표 정보를 바탕으로 PATH 그리기
+            addPath(path);
+        };
+
+        //3D 좌표 기반 Path 그리기
+        let addPath = (pathInfo) => {
+            //pathInfo가 없을 경우의 임시3D좌표
+            let path = [
+                new VIZCore.Vector3(0, 0, 0),
+                new VIZCore.Vector3(0, 0, 0),
+                new VIZCore.Vector3(0, 0, 0),
+                new VIZCore.Vector3(0, 0, 0),
+            ];
+
+            //pathInfo가 있을 경우 해당 pathInfo 사용 
+            if (pathInfo !== undefined) path = pathInfo;
+
+            //리뷰 생성(지번 경로)
+            let review = vizcore.Main.Data.ReviewItem();
+            //리뷰 아이템 타입 (PATH 타입의 리뷰아이템)
+            review.itemType = VIZCore.Enum.REVIEW_TYPES.RK_PATH;
+            //색상 설정
+            review.style.line.color.set(255, 0, 0, 255);
+            //두께 설정
+            review.style.line.thickness = 3;
+
+            //시작 위치와 마지막 위치로 폐곡선 생성 함수
+            let pathItem = (start, end) => {
+                let obj = {
+                    start: new VIZCore.Vector3().copy(start),
+                    end: new VIZCore.Vector3().copy(end),
+                    //선 형태
+                    drawType: VIZCore.Enum.LINE_TYPES.SOLID,
+                };
+                return obj;
+            };
+
+            for (let i = 0; i < path.length; i++) {
+                if (i === 0) {
+                    //마지막 포지션과 처음위치 폐곡선 만들기
+                    let item = pathItem(path[path.length - 1], path[i]);
+                    review.drawitem.position.push(item);
+                } else {
+                    let item = pathItem(path[i - 1], path[i]);
+                    review.drawitem.position.push(item);
+                }
+            }
+            //리뷰(지번경로) 노트 추가
+            let id = vizcore.Review.Note.AddNote(review);
+            //화면에 그리기
+            vizcore.Draw();
+        };
+
+        let option = {
+            event: {
+                onInit: onInit,
+                onBefore: onBefore,
+                onConfiguration: onConfiguration,
+            }
+        };
+
+        vizcore.Init(option);
+    </script>
+</head>
+
+<body>
+    <div class="VIZWeb_Main">
+        <div id="view"></div>
+    </div>
+</body>
+
+</html>

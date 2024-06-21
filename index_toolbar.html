@@ -6,53 +6,34 @@
     <title>VIZWebCore :: SOFTHILLS</title>
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
-    <script src="VIZCore/lib/jquery/jquery-3.2.1.js"></script>
+    <script src="VIZCore3D/lib/jquery/jquery-3.2.1.js"></script>
 
-    <link rel="stylesheet" href="VIZCore/Resource/css/VIZCore.css">
+    <link rel="stylesheet" href="VIZCore3D/Resource/css/VIZCore.css">
 
-    <style>/*상단 Header 테스트 버튼 스타일*/
-        .headerBar {
-            width: 100%;
-            height: 50px;
-            top: 0px;
-            left: 0px;
-        }
-
-        .ui_button_header {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 13px;
-            text-align: center;
-            border-radius: 5px;
-            color: rgb(0, 0, 0);
-            height: 25px;
-            border: 1px solid rgba(0, 13, 14, 0.377);
-            cursor: pointer;
-            margin-left: 10px;
-            padding: 0 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <!-- 예제 UI css -->
+    <link rel="stylesheet" href="./Resource/css/UISideBar.css">
 
     <script type="module">
-        import VIZ3DCore from "./VIZCore/VIZCore.js";
-        import { VIZCore } from "./VIZCore/VIZCore.js";
-        import UIHeaderBar from "./VIZCore/UIHeaderBar.js";
+        import VIZ3DCore from "./VIZCore3D/VIZCore.js";
+        import { VIZCore } from "./VIZCore3D/VIZCore.js";
+        import UISideBar from "./Resource/js/UISideBar.js";
 
         let view = document.getElementById("view");
         view.className = "VIZCore";
         let vizcore = new VIZ3DCore(view);
+        let toolbar = undefined;
+        let hasMainBtn;
+        let onoff;
 
-        // 파일 로딩 완료 시점 확인
-        let onModelLoadingCompleted = function (e, loadType) {
+        //파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = (e, loadType) => {
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
                 console.log("onLoad Structure :: ", e);
-                // 구조정보 로딩 완료
+                //구조정보 로딩 완료
             }
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
                 console.log("onLoad Mesh :: ", e);
-                // 모델정보 로딩 완료
+                //모델정보 로딩 완료
             }
 
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.HEADER) {
@@ -62,119 +43,167 @@
         };
 
         let onConfiguration = () => {
-            // 초기 환경설정 변경
+            //초기 환경설정 변경
             //vizcore.Main.Configuration.Default.Path = "../";
+            //WebAssembly 경로 설정
+            //vizcore.Configuration.Default.WebAssembly.Path = "../";
         };
 
         let onBefore = () => {
-            // WebAssembly 다운로드 경로 지정
-            // vizcore.Main.ShdCore.setPath("../", 'VIZCore/lib/shdcore/shdcore.wasm');
         };
 
-        // Event : OnSelectedEvent
-        let cbSelectNote = function (event) {
+        //Event : OnSelectedEvent
+        let cbSelectNote = (event) => {
             console.log(event.data);
-        }
-
-
-        let toolbar = undefined;
+        };
 
         let onInit = () => {
-            // Toolbar 사용
-            toolbar = new vizcore.Toolbar(view, vizcore, VIZCore);
+            //툴바 가져오기
+            toolbar = vizcore.UIElement.GetToolbar();
+            //툴바 보이기
+            toolbar.Show(true);
 
-            // ContextMenu 사용
+            //ContextMenu 사용
             let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
 
-            vizcore.Model.OpenHeader("VIZCore/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+            vizcore.Model.OpenHeader("VIZCore3D/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
 
-            ///상단 Header 테스트 버튼들
-            createTestHeader();
+            //예제 테스트 리본 탭 생성
+            createExample();
         };
 
+        let createExample = () => {
+            let example = new UISideBar(vizcore);
 
-        let createTestHeader = () => {
+            example.Init();
 
-            let header = new UIHeaderBar(vizcore);
-            header.Init();
+            example.AddTitle("툴바 기능 예제");
 
-            header.AddButton("버튼 추가", cbAddButton);
-            header.AddButton("서브 버튼 추가", cbAddSubButton);
-            header.AddButton("버튼 숨기기", cbHideButton);
-        }
+            example.AddButton("버튼 추가", cbAddButton);
+            example.AddButton("서브 버튼 추가", cbAddSubButton);
+            example.AddButton("버튼 보이기/숨기기", cbHideButton);
+        };
 
-        // 버튼 object 생성
+        //버튼 object 생성
         let createButtonObj = () => {
-
             ///버튼의 Callback Function
-            let cbSetColor = () => {
-                let Keyword = "toycar_axle_assy";
-                let nodes = vizcore.Object3D.Find.GetNodeByName(
-                    Keyword   // Keyword
-                    , true     // Full Match
-                );
-
-                let nodeIds = [];
-                for (let i = 0; i < nodes.length; i++) {
-                    nodeIds.push(nodes[i].id)
-                }
-
-                let bodyIds = vizcore.Object3D.GetBodyIdsByNodeID(nodeIds);
-
-                //색상 변경 
-                vizcore.Object3D.Color.SetColorByBodyID(bodyIds, new VIZCore.Color(255, 125, 0, 255));
-
-                //[To Do] 화면 다시그리기 호출 
-                vizcore.Render();
+            let cbExFunc = () => {
+                //스테이터스바
+                let statusbar = vizcore.UIElement.GetStatusbar();
+                //스테이터스바 메시지 변경
+                statusbar.SetMessage("서브 EX버튼 눌림", true, vizcore.UIElement.Enum.STATUS_TYPE.NORMAL);
             }
 
-
             //신규 버튼 object 생성
-            let button = toolbar.GetButtonObj();
-            button.id = "button";                               //button id
-            button.tooltip = "특정 노드 색상 변경"                //button tooltip
-            button.checked = false;                              //button checked
-            button.imagesrc = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAAChUlEQVRYhe2XsWsUQRTGP0VyVS4RjM0ZCPEK4wo5EU1h4WJIITarFoKgnrWwJrB/wNnYuMVlIY2NMUUghbKNZeBsBBXhAi6JECUhXpOkuJxVqpM3zK6zs7Pn7u3FQ/CD5fbNzcz7zXtvZu6Otdtt9FPH++r9nwfQbGdYsx09yxypakCznRKAMgByOqnosg2gRo9nmYs9A+CrrAC4lpgWOABQ9SyzkglAs50qgCe+fe70CKaL43C9dTQOWkG/wlAehjaB1c3v2NjdE6dYo6h5lllPBUD5BeCKq748egaLd28Hfcorb/Bp5wdz/vrBPQzmBli76b7F6uY3ORq6CqJTEVblkF8ZLUBl08p952BROiXPNQRAWRNKAM12ZgE8lNsbrVbI3tjdZ58fdxod+3FNarYTqYdICnjotzh1RMaFCRTyeebE/bIefD1dPMtWLrdLolSMeZbZ9JtPKDrN+s4Hczk8vjrFHC68/8CKK25yyrmY95hipXkNMR1xAEzPbszgenGcvVMBzrx4iZ+Hh3GrC0XDMW6y9/uXLuLO0rIIoYsAoRrg+z0IPUXg9/sAW1USiUVI46hIBY2JhlyEJdGgLebr695+yO4kOUp0NsRJTsGwaFDeaTBFQjpcOmrpcz2IIO0UaWxTNFQ1EFIax6J8CIVcselv/x7Yli8pGWDriAHKcoMMUDsix3QA3fIsMzJ/CMCzTIrAux47fsVPP1fVQVWEkUsooaOKZ5nVtITK61iznVpKiLlunJPidoHBV5VUpRR9/wzAbys9BYTRUwAOUecQawnmUV7dmQAkiKfdOsgEwCGa/JftSSo2xTalND3qmoB2QbfP+efzepbx9Pz/c9pfAAC/AMXbRjT+9sJTAAAAAElFTkSuQmCC';
-            button.callback = cbSetColor;                       //button callback
+            let button = vizcore.UIElement.GetObject(vizcore.UIElement.Enum.OBJECT_TYPE.BUTTON);
+            //button id
+            button.id = "subButton";
+            //button tooltip
+            button.text = "추가된 서브 버튼"
+            //button checked                
+            button.status.check = false;
+            //button icon image
+            button.icon.normal = "data:image/png;base64,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";
+            //button callback
+            button.event.click = cbExFunc;
 
             return button;
-        }
-
+        };
 
         /* Toolbar Callback Function*/
-        // 버튼 추가
+        //일반 버튼 추가
         let cbAddButton = () => {
+            let cbExFunc = () => {
+                //스테이터스바
+                let statusbar = vizcore.UIElement.GetStatusbar();
+                //스테이터스바 메시지 변경
+                statusbar.SetMessage("EX버튼 눌림", true, vizcore.UIElement.Enum.STATUS_TYPE.NORMAL);
+            };
 
             //버튼 생성
-            let button = createButtonObj();
+            let button = vizcore.UIElement.GetObject(vizcore.UIElement.Enum.OBJECT_TYPE.BUTTON);
+            //button id
+            button.id = "button";
+            //button tooltip
+            button.text = "추가된 버튼"
+            //button checked                
+            button.status.check = false;
+            //button icon image
+            button.icon.normal = "data:image/png;base64,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";
+            //button callback
+            button.event.click = cbExFunc;
 
             //신규 버튼 추가
-            toolbar.AddButton([button]);
-        }
+            toolbar.Add([button]);
 
-        // 서브 버튼 추가 
+            alert("버튼이 하단 툴바에 EX 아이콘의 버튼으로 생성 되었습니다.");
+        };
+
+        //서브 버튼 추가 
         let cbAddSubButton = () => {
+            if (hasMainBtn == true) {
+                //서브버튼 생성
+                let subButton = createButtonObj();
+                let parentButtonId = 'mainButton';
 
-            //버튼 생성
-            let button = createButtonObj();
+                //신규 서브 버튼 추가
+                //* parentButtonId : 추가할 상위 버튼의 id 
+                //* subButton: 추가할 button object
+                //* 1(index): 몇번째 위치에 추가할지 (default로 마지막에 추가)
+                toolbar.AddSub(parentButtonId, [subButton], 1);
 
-            //추가할 상위 버튼의 id
-            let parentButtonId = vizcore.Main.GetViewID() + "ui_color";
+                alert("서브 EX버튼이 추가 되었습니다.");
+            } else {
+                //메인 버튼 생성
+                let subButton = createButtonObj();
 
-            //신규 서브 버튼 추가
-            //* parentButtonId : 추가할 상위 버튼의 id 
-            //* button: 추가할 button object
-            //* 1(index): 몇번째 위치에 추가할지 (default로 마지막에 추가)
-            toolbar.AddSubButton(parentButtonId, button, 1);
-        }
+                //추가할 상위 버튼
+                let mainButton = vizcore.UIElement.GetObject(vizcore.UIElement.Enum.OBJECT_TYPE.BUTTON);
+                //button id
+                mainButton.id = "mainButton";
+                //button tooltip
+                mainButton.text = "추가된 메인 버튼"
+                //mainButton checked                
+                mainButton.status.check = false;
+                //mainButton icon image
+                mainButton.icon.normal = "data:image/png;base64,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";
+                mainButton.subButton = [subButton];
 
-        // 버튼 숨기기
+                //신규 버튼 추가
+                toolbar.Add([mainButton]);
+
+                hasMainBtn = true;
+
+                alert("메인 EX버튼과 서브 EX버튼이 추가 되었습니다.");
+            }
+
+            //서브버튼 추가 확인을 위해 mainButton클릭
+            setTimeout(() => {
+                document.getElementById('mainButton').click()
+            }, 200);
+        };
+
+        //버튼 숨기기
         let cbHideButton = () => {
-            //"ui_config_visible" id를 가진 버튼 숨기기
-            let buttonId = vizcore.Main.GetViewID() + "ui_config_visible";
-            toolbar.ShowButton(buttonId, false);
-        }
+            let button = toolbar.GetMenuById('button');
+            if (!button) {
+                alert("'버튼 추가' 로 해당버튼을 추가 해주세요.");
+            } else {
+                if (onoff == true) {
+                    //"button" id를 가진 버튼 보이기
+                    toolbar.SetVisibleButton(button.id, true);
+                    onoff = false;
 
+                    alert("버튼이 보여집니다.");
+                } else {
+                    //"button" id를 가진 버튼 숨기기
+                    toolbar.SetVisibleButton(button.id, false);
+                    onoff = true;
+
+                    alert("버튼이 숨겨집니다.");
+                }
+            }
+        };
 
         let option = {
             event: {
@@ -182,14 +211,16 @@
                 onBefore: onBefore,
                 onConfiguration: onConfiguration,
             }
-        }
+        };
 
         vizcore.Init(option);
     </script>
 </head>
 
 <body>
-    <div id="view"></div>
+    <div class="VIZWeb_Main">
+        <div id="view"></div>
+    </div>
 </body>
 
 </html>

@@ -1,0 +1,396 @@
+{
+	"note":[
+		{
+			"id": 1,
+			"title":"2d 노트_01",
+			"kind":"RK_2D_NOTE",
+			"text_position": {
+				"x" : 0.625000,
+				"y" : 0.123477,
+				"z" : 0.000000
+			},
+			"style":{ 
+					"font": {
+						"size": 18, 
+						"color": "#FF000000"
+					}, 
+					"border": {
+						"enable": true,
+						"color": "#FFFF0000"
+					}, 
+					"background": {
+						"enable": true,
+						"color": "#FFFFFFFF"
+					}, 
+					"arrow": {
+						"size": 10.000000,
+						"color": "#FF000000"
+					}, 
+					"line": {
+						"thickness": 3.000000,
+						"color": "#FFFF0000"
+					} 
+			} 
+		},
+		{
+			"id": 2,
+			"title":"2D노트_02",
+			"kind":"RK_2D_NOTE",
+			"text_position": {
+				"x" : 0.776953,
+				"y" : 0.325751,
+				"z" : 0.000000
+			},
+			"style":{ 
+					"font": {
+						"size": 18, 
+						"color": "#FF000000"
+					}, 
+					"border": {
+						"enable": true,
+						"color": "#FFFF0000"
+					}, 
+					"background": {
+						"enable": true,
+						"color": "#FFFFFFFF"
+					}, 
+					"arrow": {
+						"size": 10.000000,
+						"color": "#FF000000"
+					}, 
+					"line": {
+						"thickness": 3.000000,
+						"color": "#FFFF0000"
+					} 
+			} 
+		},
+		{
+			"id": 3,
+			"title":"2D노트_03",
+			"kind":"RK_2D_NOTE",
+			"text_position": {
+				"x" : 0.776172,
+				"y" : 0.650690,
+				"z" : 0.000000
+			},
+			"style":{ 
+					"font": {
+						"size": 18, 
+						"color": "#FF000000"
+					}, 
+					"border": {
+						"enable": true,
+						"color": "#FFFF0000"
+					}, 
+					"background": {
+						"enable": true,
+						"color": "#FFFFFFFF"
+					}, 
+					"arrow": {
+						"size": 10.000000,
+						"color": "#FF000000"
+					}, 
+					"line": {
+						"thickness": 3.000000,
+						"color": "#FFFF0000"
+					} 
+			} 
+		},
+		{
+			"id": 4,
+			"title":"2D노트_04",
+			"kind":"RK_2D_NOTE",
+			"text_position": {
+				"x" : 0.637109,
+				"y" : 0.916328,
+				"z" : 0.000000
+			},
+			"style":{ 
+					"font": {
+						"size": 18, 
+						"color": "#FF000000"
+					}, 
+					"border": {
+						"enable": true,
+						"color": "#FFFF0000"
+					}, 
+					"background": {
+						"enable": true,
+						"color": "#FFFFFFFF"
+					}, 
+					"arrow": {
+						"size": 10.000000,
+						"color": "#FF000000"
+					}, 
+					"line": {
+						"thickness": 3.000000,
+						"color": "#FFFF0000"
+					} 
+			} 
+		},
+		{
+			"id": 5,
+			"title":"2D노트_05",
+			"kind":"RK_2D_NOTE",
+			"text_position": {
+				"x" : 0.376563,
+				"y" : 0.919578,
+				"z" : 0.000000
+			},
+			"style":{ 
+					"font": {
+						"size": 18, 
+						"color": "#FF000000"
+					}, 
+					"border": {
+						"enable": true,
+						"color": "#FFFF0000"
+					}, 
+					"background": {
+						"enable": true,
+						"color": "#FFFFFFFF"
+					}, 
+					"arrow": {
+						"size": 10.000000,
+						"color": "#FF000000"
+					}, 
+					"line": {
+						"thickness": 3.000000,
+						"color": "#FFFF0000"
+					} 
+			} 
+		},
+		{
+			"id": 6,
+			"title":"2D노트_06",
+			"kind":"RK_2D_NOTE",
+			"text_position": {
+				"x" : 0.168359,
+				"y" : 0.652315,
+				"z" : 0.000000
+			},
+			"style":{ 
+					"font": {
+						"size": 18, 
+						"color": "#FF000000"
+					}, 
+					"border": {
+						"enable": true,
+						"color": "#FFFF0000"
+					}, 
+					"background": {
+						"enable": true,
+						"color": "#FFFFFFFF"
+					}, 
+					"arrow": {
+						"size": 10.000000,
+						"color": "#FF000000"
+					}, 
+					"line": {
+						"thickness": 3.000000,
+						"color": "#FFFF0000"
+					} 
+			} 
+		},
+		{
+			"id": 7,
+			"title":"2D노트_07",
+			"kind":"RK_2D_NOTE",
+			"text_position": {
+				"x" : 0.162891,
+				"y" : 0.316003,
+				"z" : 0.000000
+			},
+			"style":{ 
+					"font": {
+						"size": 18, 
+						"color": "#FF000000"
+					}, 
+					"border": {
+						"enable": true,
+						"color": "#FFFF0000"
+					}, 
+					"background": {
+						"enable": true,
+						"color": "#FFFFFFFF"
+					}, 
+					"arrow": {
+						"size": 10.000000,
+						"color": "#FF000000"
+					}, 
+					"line": {
+						"thickness": 3.000000,
+						"color": "#FFFF0000"
+					} 
+			} 
+		},
+		{
+			"id": 8,
+			"title":"2D노트_08",
+			"kind":"RK_2D_NOTE",
+			"text_position": {
+				"x" : 0.355859,
+				"y" : 0.115353,
+				"z" : 0.000000
+			},
+			"style":{ 
+					"font": {
+						"size": 18, 
+						"color": "#FF000000"
+					}, 
+					"border": {
+						"enable": true,
+						"color": "#FFFF0000"
+					}, 
+					"background": {
+						"enable": true,
+						"color": "#FFFFFFFF"
+					}, 
+					"arrow": {
+						"size": 10.000000,
+						"color": "#FF000000"
+					}, 
+					"line": {
+						"thickness": 3.000000,
+						"color": "#FFFF0000"
+					} 
+			} 
+		}
+	],
+	"measure":[
+		{
+			"id": 10,
+			"title":"거리 = 50.40 mm\ndx,dy,dz:[50.37, 0.00, 1.78]",
+			"kind":"RK_MEASURE_POINT_DISTANCE",
+			"text_position": {
+				"x" : -4.175803,
+				"y" : -0.910502,
+				"z" : 35.377350
+			},
+			"target_1_position": {
+				"x" : -29.355074,
+				"y" : -14.874063,
+				"z" : 17.737394
+			},
+			"target_2_position": {
+				"x" : 21.013908,
+				"y" : -14.874063,
+				"z" : 19.516203
+			},
+			"style":{ 
+					"font": {
+						"size": 14, 
+						"color": "#FFFFFFFF"
+					}, 
+					"border": {
+						"enable": true,
+						"color": "#FF000000"
+					}, 
+					"background": {
+						"enable": true,
+						"color": "#FF0000FF"
+					}, 
+					"arrow": {
+						"size": 10.000000,
+						"color": "#FFFF0000"
+					}, 
+					"line": {
+						"thickness": 2.000000,
+						"color": "#FFFFFFFF"
+					} 
+			} 
+		}
+	],
+	"snapShot":[
+		{
+			"id": 3,
+			"title":"메롱",
+			"description":"ㅎㅎㅎ",
+			"Perspective": false,
+			"CameraMatrix": [0.707107,0.353553,-0.612372,0.000000,-0.707107,0.353553,-0.612372,0.000000,-0.000000,0.866025,0.500000,0.000000,-35534.695313,-38232.523438,20177.214844,1.000000],
+			"CameraDistance": 28628.781250,
+			"CameraZoom": 0.897651,
+			"CameraDepth": 0.000000,
+			"CameraPivot": {
+				"x" : 50448.265625,
+				"y" : -15.000000,
+				"z" : 21413.437500
+			}
+		},
+		{
+			"id": 4,
+			"title":"메롱",
+			"description":"ㅎㅎㅎ",
+			"Perspective": false,
+			"CameraMatrix": [0.707107,0.353553,-0.612372,0.000000,-0.707107,0.353553,-0.612372,0.000000,-0.000000,0.866025,0.500000,0.000000,-35534.695313,-38232.523438,20177.214844,1.000000],
+			"CameraDistance": 28628.781250,
+			"CameraZoom": 0.897651,
+			"CameraDepth": 0.000000,
+			"CameraPivot": {
+				"x" : 50448.265625,
+				"y" : -15.000000,
+				"z" : 21413.437500
+			}
+		},
+		{
+			"id": 5,
+			"title":"메롱",
+			"description":"ㅎㅎㅎ",
+			"Perspective": false,
+			"CameraMatrix": [0.707107,0.353553,-0.612372,0.000000,-0.707107,0.353553,-0.612372,0.000000,-0.000000,0.866025,0.500000,0.000000,-35534.695313,-38232.523438,20177.214844,1.000000],
+			"CameraDistance": 28628.781250,
+			"CameraZoom": 0.897651,
+			"CameraDepth": 0.000000,
+			"CameraPivot": {
+				"x" : 50448.265625,
+				"y" : -15.000000,
+				"z" : 21413.437500
+			}
+		},
+		{
+			"id": 7,
+			"title":"메롱",
+			"description":"ㅎㅎㅎ",
+			"Perspective": false,
+			"CameraMatrix": [0.493390,0.493674,-0.716139,0.000000,-0.869809,0.280031,-0.406222,0.000000,-0.000000,0.823328,0.567566,0.000000,-24755.488281,-44388.207031,23968.333984,1.000000],
+			"CameraDistance": 28628.781250,
+			"CameraZoom": 0.897651,
+			"CameraDepth": 0.000000,
+			"CameraPivot": {
+				"x" : 50448.265625,
+				"y" : -15.000000,
+				"z" : 21413.437500
+			}
+		},
+		{
+			"id": 8,
+			"title":"메롱",
+			"description":"ㅎㅎㅎ",
+			"Perspective": false,
+			"CameraMatrix": [0.493390,0.493674,-0.716139,0.000000,-0.869809,0.280031,-0.406222,0.000000,-0.000000,0.823328,0.567566,0.000000,-24755.488281,-44388.207031,23968.333984,1.000000],
+			"CameraDistance": 28628.781250,
+			"CameraZoom": 0.897651,
+			"CameraDepth": 0.000000,
+			"CameraPivot": {
+				"x" : 50448.265625,
+				"y" : -15.000000,
+				"z" : 21413.437500
+			}
+		},
+		{
+			"id": 9,
+			"title":"메롱",
+			"description":"ㅎㅎㅎ",
+			"Perspective": false,
+			"CameraMatrix": [0.493390,0.493674,-0.716139,0.000000,-0.869809,0.280031,-0.406222,0.000000,-0.000000,0.823328,0.567566,0.000000,-24755.488281,-44388.207031,23968.333984,1.000000],
+			"CameraDistance": 28628.781250,
+			"CameraZoom": 0.897651,
+			"CameraDepth": 0.000000,
+			"CameraPivot": {
+				"x" : 50448.265625,
+				"y" : -15.000000,
+				"z" : 21413.437500
+			}
+		}
+	]
+}

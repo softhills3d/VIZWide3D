@@ -6,53 +6,34 @@
     <title>VIZWebCore :: SOFTHILLS</title>
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
-    <script src="VIZCore/lib/jquery/jquery-3.2.1.js"></script>
+    <script src="VIZCore3D/lib/jquery/jquery-3.2.1.js"></script>
 
-    <link rel="stylesheet" href="VIZCore/Resource/css/VIZCore.css">
+    <link rel="stylesheet" href="VIZCore3D/Resource/css/VIZCore.css">
 
-    <style> /*상단 Header 테스트 버튼 스타일*/
-        .headerBar {
-            width: 100%;
-            height: 50px;
-            top: 0px;
-            left: 0px;
-        }
+    <!-- 예제 UI css -->
+    <link rel="stylesheet" href="./Resource/css/UISideBar.css">
 
-        .ui_button_header {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 13px;
-            text-align: center;
-            border-radius: 5px;
-            color: rgb(0, 0, 0);
-            height: 25px;
-            border: 1px solid rgba(0, 13, 14, 0.377);
-            cursor: pointer;
-            margin-left: 10px;
-            padding: 0 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-    
     <script type="module">
-        import VIZ3DCore from "./VIZCore/VIZCore.js";
-        import { VIZCore } from "./VIZCore/VIZCore.js";
-        import UIHeaderBar from "./VIZCore/UIHeaderBar.js";
+        import VIZ3DCore from "./VIZCore3D/VIZCore.js";
+        import { VIZCore } from "./VIZCore3D/VIZCore.js";
+        import UISideBar from "./Resource/js/UISideBar.js";
 
         let view = document.getElementById("view");
         view.className = "VIZCore";
         let vizcore = new VIZ3DCore(view);
 
-        // 파일 로딩 완료 시점 확인
-        let onModelLoadingCompleted = function (e, loadType) {
+        //선택된 모델의 아이디를 저장할 변수
+        let selection;
+
+        //파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = (e, loadType) => {
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
                 console.log("onLoad Structure :: ", e);
-                // 구조정보 로딩 완료
+                //구조정보 로딩 완료
             }
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
                 console.log("onLoad Mesh :: ", e);
-                // 모델정보 로딩 완료
+                //모델정보 로딩 완료
             }
 
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.HEADER) {
@@ -62,77 +43,73 @@
         };
 
         let onConfiguration = () => {
-            // 초기 환경설정 변경
+            //초기 환경설정 변경
             //vizcore.Main.Configuration.Default.Path = "../";
+            //WebAssembly 경로 설정
+            //vizcore.Configuration.Default.WebAssembly.Path = "../";
         };
 
         let onBefore = () => {
-                    };
+        };
 
-        let cbSelectNodeEvent = function (event) {
-            // 선택된 모델이 없음
+        let cbSelectNodeEvent = (event) => {
+            //선택된 모델이 없음
             if (event.data.id == -1) {
-
+                selection = event.data.id
             }
-            // 선택된 모델이 있음
+            //선택된 모델이 있음
             else {
-
-                let node = vizcore.Object3D.FromID(event.data.id);
-                console.log("select node : ", node);
+                selection = event.data.id;
             }
         };
 
         let onInit = () => {
-
-            // Toolbar 사용
-            let toolbar = new vizcore.Toolbar(view, vizcore, VIZCore);
-
-            // ContextMenu 사용
+            //ContextMenu 사용
             let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
 
             vizcore.Model.OpenHeader("VIZCore/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
 
-            // Initialize 시 모델 선택 이벤트 등록 (중복 이벤트 설정 방지)
+            //Initialize 시 모델 선택 이벤트 등록 (중복 이벤트 설정 방지)
             vizcore.Object3D.OnObject3DSelected(cbSelectNodeEvent);
 
-            ///상단 Header 테스트 버튼들
-            createTestHeader();
+            //예제 테스트 리본 탭 생성
+            createExample();
         };
 
-        let createTestHeader = () => {
+        let createExample = () => {
+            let example = new UISideBar(vizcore);
 
-            let header = new UIHeaderBar(vizcore);
-            header.Init();
+            example.Init();
 
-            header.AddButton("노드 정보 반환", cbGetNodeByName);
-            header.AddButton("노드 선택", cbSelectNodes);
+            example.AddTitle("오브젝트 예제");
+
+            example.AddButton("노드 정보 반환", cbGetNodeBySelected);
+            example.AddButton("지정된 노드 선택", cbSelectNodes);
         };
 
         /* Object Node Callback Function*/
-        // 노드 정보 반환
-        let cbGetNodeByName = () => {
+        //노드 정보 반환
+        let cbGetNodeBySelected = () => {
+            if (selection) {
+                let node = vizcore.Object3D.FromID(selection);
+                console.log("선택된 노드 정보 반환: ", node)
 
-            let Keyword = "toycar_wheel"
-            let nodes = vizcore.Object3D.Find.GetNodeByName(
-                Keyword   // Keyword
-                , true     // Full Match
-            );
-
-            console.log(" keyword : ", Keyword);
-            console.log(" get nodes : ", nodes)
+                alert("개발자도구(F12)의 콘솔(Console)탭을 통해 관련 예제 결과를 확인해주세요.");
+            } else {
+                alert("먼저 노드를 선택해주세요");
+            }
         };
 
-        // 노드 선택
+        //노드 선택
         let cbSelectNodes = () => {
-
             let Keyword = "toycar_wheel"
             let nodes = vizcore.Object3D.Find.GetNodeByName(
-                Keyword   // Keyword
-                , true     // Full Match
+                Keyword    //Keyword
+                , true     //Full Match
             );
             vizcore.Object3D.SelectByNode(nodes, true, true);
+            alert("'toycar_wheel'노드에 해당하는 개체가 선택됩니다.");
         };
-
 
         let option = {
             event: {
@@ -140,14 +117,16 @@
                 onBefore: onBefore,
                 onConfiguration: onConfiguration,
             }
-        }
+        };
 
         vizcore.Init(option);
     </script>
 </head>
 
 <body>
-    <div id="view"></div>
+    <div class="VIZWeb_Main">
+        <div id="view"></div>
+    </div>
 </body>
 
 </html>

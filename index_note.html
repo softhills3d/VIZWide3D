@@ -6,53 +6,31 @@
     <title>VIZWebCore :: SOFTHILLS</title>
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
-    <script src="VIZCore/lib/jquery/jquery-3.2.1.js"></script>
+    <script src="VIZCore3D/lib/jquery/jquery-3.2.1.js"></script>
 
-    <link rel="stylesheet" href="VIZCore/Resource/css/VIZCore.css">
+    <link rel="stylesheet" href="VIZCore3D/Resource/css/VIZCore.css">
 
-    <style> /*상단 Header 테스트 버튼 스타일*/
-        .headerBar {
-            width: 100%;
-            height: 50px;
-            top: 0px;
-            left: 0px;
-        }
-
-        .ui_button_header {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 13px;
-            text-align: center;
-            border-radius: 5px;
-            color: rgb(0, 0, 0);
-            height: 25px;
-            border: 1px solid rgba(0, 13, 14, 0.377);
-            cursor: pointer;
-            margin-left: 10px;
-            padding: 0 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <!-- 예제 UI css -->
+    <link rel="stylesheet" href="./Resource/css/UISideBar.css">
 
     <script type="module">
-        import VIZ3DCore from "./VIZCore/VIZCore.js";
-        import { VIZCore } from "./VIZCore/VIZCore.js";
-        import UIHeaderBar from "./VIZCore/UIHeaderBar.js";
+        import VIZ3DCore from "./VIZCore3D/VIZCore.js";
+        import { VIZCore } from "./VIZCore3D/VIZCore.js";
+        import UISideBar from "./Resource/js/UISideBar.js";
 
         let view = document.getElementById("view");
         view.className = "VIZCore";
         let vizcore = new VIZ3DCore(view);
 
-        // 파일 로딩 완료 시점 확인
-        let onModelLoadingCompleted = function (e, loadType) {
+        //파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = (e, loadType) => {
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
                 console.log("onLoad Structure :: ", e);
-                // 구조정보 로딩 완료
+                //구조정보 로딩 완료
             }
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
                 console.log("onLoad Mesh :: ", e);
-                // 모델정보 로딩 완료
+                //모델정보 로딩 완료
             }
 
             if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.HEADER) {
@@ -62,56 +40,59 @@
         };
 
         let onConfiguration = () => {
-            // 초기 환경설정 변경
+            //초기 환경설정 변경
             //vizcore.Main.Configuration.Default.Path = "../";
+            //WebAssembly 경로 설정
+            //vizcore.Configuration.Default.WebAssembly.Path = "../";
         };
 
         let onBefore = () => {
-                    };
+        };
 
-        // Event : OnSelectedEvent
-        let cbSelectNote = function (event) {
+        //Event : OnSelectedEvent
+        let cbSelectNote = (event) => {
             console.log(event.data);
-        }
+        };
 
         let onInit = () => {
-
-            // Toolbar 사용
-            let toolbar = new vizcore.Toolbar(view, vizcore, VIZCore);
-
-            // ContextMenu 사용
+            //ContextMenu 사용
             let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
 
             vizcore.Model.OpenHeader("VIZCore/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
 
-            // Initialize 시 노트 선택 이벤트 등록 (중복 이벤트 설정 방지)
+            //Initialize 시 노트 선택 이벤트 등록 (중복 이벤트 설정 방지)
             vizcore.Review.Note.OnSelectedEvent(cbSelectNote);
 
-            ///상단 Header 테스트 버튼들
-            createTestHeader();
+            //예제 테스트 리본 탭 생성
+            createExample();
         };
 
-        let createTestHeader = () => {
+        let createExample = () => {
+            let example = new UISideBar(vizcore);
 
-            let header = new UIHeaderBar(vizcore);
-            header.Init();
+            example.Init();
 
-            header.AddButton("Surface Note 생성", cbAddSurfaceNote);
-            header.AddButton("3D Note 생성", cbAdd3DNote);
-            header.AddButton("2D Note 생성", cbAdd2DNote);
-            header.AddButton("Surface Note 수정", cbChangeSurfaceNote);
-            header.AddButton("3D Note 수정", cbChange3DNote);
-            header.AddButton("2D Note 수정", cbChange2DNote);
-        }
+            example.AddTitle("노트 기능 예제");
+
+            example.AddButton("2D Note 생성", cbAdd2DNote);
+            example.AddButton("3D Note 생성", cbAdd3DNote);
+            example.AddButton("Surface Note 생성", cbAddSurfaceNote);
+            example.AddButton("2D Note 수정", cbChange2DNote);
+            example.AddButton("3D Note 수정", cbChange3DNote);
+            example.AddButton("Surface Note 수정", cbChangeSurfaceNote);
+            example.AddButton("2D Note 삭제", cbDelete2DNote);
+            example.AddButton("3D Note 삭제", cbDelete3DNote);
+            example.AddButton("Surface Note 삭제", cbDeleteSurfaceNote);
+            example.AddButton("노트 전체 삭제", cbDeleteAllNote);
+        };
 
         /* Note Callback Function*/
         let changeSurfaceNoteId = undefined;
         let change2DNoteId = undefined;
         let change3DNoteId = undefined;
 
-        //  Surface Note 추가
+        //Surface Note 추가
         let cbAddSurfaceNote = () => {
-
             //Surface Note 객체 생성
             let note = vizcore.Review.Note.NewNoteSurface();
 
@@ -120,20 +101,20 @@
             text.push('Surface Note #2');
 
             //Note Style 정의
-            note.text.value = text;                              //value
-            note.text.position = new VIZCore.Vector3(10, 10, 10);          // Text
-            note.drawitem.position.push(new VIZCore.Vector3(10, 0, 0));  // Arrow
+            note.text.value = text;                                      //value
+            note.text.position = new VIZCore.Vector3(10, 10, 10);        //Text
+            note.drawitem.position.push(new VIZCore.Vector3(10, 0, 0));  //Arrow
 
-            note.style.font.size = 15;
-            note.style.font.color.set(0, 56, 101, 255);          // R, G, B, A
-            note.style.border.type = 1;                          // 0 (Rectangle), 1(Rounded Rectangle)
-            note.style.border.color.set(41, 143, 194, 255);      // R, G, B, A
-            note.style.background.color.set(255, 255, 255, 200); // R, G, B, A
+            note.style.font.size = 10;
+            note.style.font.color.set(0, 56, 101, 255);                  //R, G, B, A
+            note.style.border.type = 1;                                  //0 (Rectangle), 1(Rounded Rectangle)
+            note.style.border.color.set(41, 143, 194, 255);              //R, G, B, A
+            note.style.background.color.set(255, 255, 255, 200);         //R, G, B, A
 
-            note.style.arrow.color.set(255, 0, 0, 255);          // R, G, B, A
+            note.style.arrow.color.set(255, 0, 0, 255);                  //R, G, B, A
             note.style.arrow.size = 10;
 
-            note.style.line.color.set(0, 0, 0, 255);             // R, G, B, A
+            note.style.line.color.set(0, 0, 0, 255);                     //R, G, B, A
             note.style.line.thickness = 4;
 
             //Note 추가
@@ -146,7 +127,7 @@
             changeSurfaceNoteId = noteId;
         };
 
-        // 3D Note 추가
+        //3D Note 추가
         let cbAdd3DNote = () => {
             //3D Note 객체 생성
             let note = vizcore.Review.Note.NewNote3D();
@@ -160,10 +141,10 @@
             note.text.position = new VIZCore.Vector3(10, 20, 30);         //생성 위치
 
             note.style.font.size = 13;
-            note.style.font.color.set(124, 28, 242, 255);          // R, G, B, A
-            note.style.border.type = 1;                          // 0 (Rectangle), 1(Rounded Rectangle)
-            note.style.border.color.set(41, 143, 194, 255);      // R, G, B, A
-            note.style.background.color.set(255, 255, 255, 200); // R, G, B, A
+            note.style.font.color.set(124, 28, 242, 255);          //R, G, B, A
+            note.style.border.type = 1;                          //0 (Rectangle), 1(Rounded Rectangle)
+            note.style.border.color.set(41, 143, 194, 255);      //R, G, B, A
+            note.style.background.color.set(255, 255, 255, 200); //R, G, B, A
 
             //Note 추가
             let noteId = vizcore.Review.Note.AddNote(note);
@@ -175,16 +156,16 @@
             change3DNoteId = noteId;
         };
 
-        // 2D Note 추가
+        //2D Note 추가
         let cbAdd2DNote = () => {
-            // 노트 객체 생성
+            //노트 객체 생성
             let note = vizcore.Main.Data.ReviewItem();
 
-            // 노트 타입 설정
-            // 타입 구분
-            // RK_2D_NOTE -> 2D 노트 타입
-            // RK_3D_NOTE -> 3D 노트 타입
-            // RK_SURFACE_NOTE -> Suface 노트 타입
+            //노트 타입 설정
+            //타입 구분
+            //RK_2D_NOTE -> 2D 노트 타입
+            //RK_3D_NOTE -> 3D 노트 타입
+            //RK_SURFACE_NOTE -> Suface 노트 타입
             note.itemType = VIZCore.Enum.REVIEW_TYPES.RK_2D_NOTE;
 
             let text = [];
@@ -193,13 +174,13 @@
 
             //Note Style 정의
             note.text.value = text;                                       //value
-            note.text.position = new VIZCore.Vector3(500, 100, 100);         //생성 위치
+            note.text.position = new VIZCore.Vector3(500, 100, 100);      //생성 위치
 
             note.style.font.size = 13;
-            note.style.font.color.set(13, 65, 6, 255);          // R, G, B, A
-            note.style.border.type = 1;                          // 0 (Rectangle), 1(Rounded Rectangle)
-            note.style.border.color.set(41, 143, 194, 255);      // R, G, B, A
-            note.style.background.color.set(255, 255, 255, 200); // R, G, B, A
+            note.style.font.color.set(13, 65, 6, 255);                    //R, G, B, A
+            note.style.border.type = 1;                                   //0 (Rectangle), 1(Rounded Rectangle)
+            note.style.border.color.set(41, 143, 194, 255);               //R, G, B, A
+            note.style.background.color.set(255, 255, 255, 200);          //R, G, B, A
 
             //Note 추가
             let noteId = vizcore.Review.Note.AddNote(note);
@@ -211,78 +192,82 @@
             change2DNoteId = noteId;
         };
 
-        // Surface Note 수정
+        //Surface Note 수정
         let cbChangeSurfaceNote = () => {
             ///ReviewItem 가져오기
             let review = vizcore.Review.GetItem(changeSurfaceNoteId);
 
-            if (review !== undefined) {
+            ///Style 재정의
+            let text = [];
+            text.push('Change Surface Note #1');
+            text.push('Change Surface Note #2');
 
-                ///Style 재정의
-                let text = [];
-                text.push('Change Surface Note #1');
-                text.push('Change Surface Note #2');
+            review.text.value = text;
+            review.text.position = new VIZCore.Vector3(20, 20, 20);          //Text
+            review.drawitem.position.push(new VIZCore.Vector3(10, 0, 0));    //Arrow        
 
-                review.text.value = text;
-                review.text.position = new VIZCore.Vector3(20, 20, 20);          // Text
-                review.drawitem.position.push(new VIZCore.Vector3(10, 0, 0));  // Arrow        
-
-                //화면 다시 그리기
-                vizcore.Render();
-            }
-            else {
-                console.log("수정할 surface Note가 없습니다.");
-            }
+            //화면 다시 그리기
+            vizcore.Render();
         };
 
-        // 3D Note 수정
+        //3D Note 수정
         let cbChange3DNote = () => {
             ///ReviewItem 가져오기
             let review = vizcore.Review.GetItem(change3DNoteId);
 
-            if (review !== undefined) {
+            ///Style 재정의
+            let text = [];
+            text.push('Change 3D Note #1');
+            text.push('Change 3D Note #2');
 
-                ///Style 재정의
-                let text = [];
-                text.push('Change 3D Note #1');
-                text.push('Change 3D Note #2');
+            review.text.value = text;
+            review.style.background.color.set(243, 245, 219, 200);    //R, G, B, A       
 
-                review.text.value = text;
-                review.style.background.color.set(243, 245, 219, 200); // R, G, B, A       
-
-                //화면 다시 그리기
-                vizcore.Render();
-            }
-            else {
-                console.log("수정할 3d Note가 없습니다.");
-            }
+            //화면 다시 그리기
+            vizcore.Render();
         };
 
-
-        // 2D Note 수정
+        //2D Note 수정
         let cbChange2DNote = () => {
             ///ReviewItem 가져오기
             let review = vizcore.Review.GetItem(change2DNoteId);
 
-            if (review !== undefined) {
-                ///Style 재정의
-                let text = [];
-                text.push('Change 2D Note #1');
-                text.push('Change 2D Note #2');
+            ///Style 재정의
+            let text = [];
+            text.push('Change 2D Note #1');
+            text.push('Change 2D Note #2');
 
-                review.style.font.size = 15;
-                review.text.value = text;
-                review.style.border.type = 0;                          // 0 (Rectangle), 1(Rounded Rectangle)   
+            review.style.font.size = 15;
+            review.text.value = text;
+            review.style.border.type = 0;    //0 (Rectangle), 1(Rounded Rectangle)   
 
-                //화면 다시 그리기
-                vizcore.Render();
-            }
-            else {
-                console.log("수정할 2d Note가 없습니다.");
-            }
+            //화면 다시 그리기
+            vizcore.Render();
         };
 
+        //2D노트 삭제
+        let cbDelete2DNote = () => {
+            vizcore.Review.Note.DeleteByID(change2DNoteId);
+            vizcore.Render();
+        };
 
+        //3D노트 삭제
+        let cbDelete3DNote = () => {
+            vizcore.Review.Note.DeleteByID(change3DNoteId);
+            vizcore.Render();
+        };
+
+        //표면노트 삭제
+        let cbDeleteSurfaceNote = () => {
+            vizcore.Review.Note.DeleteByID(changeSurfaceNoteId);
+            vizcore.Render();
+        };
+
+        //노트 전체 삭제
+        let cbDeleteAllNote = () => {
+            vizcore.Review.Note.DeleteAll();
+            vizcore.Render();
+        };
 
         let option = {
             event: {
@@ -290,14 +275,16 @@
                 onBefore: onBefore,
                 onConfiguration: onConfiguration,
             }
-        }
+        };
 
         vizcore.Init(option);
     </script>
 </head>
 
 <body>
-    <div id="view"></div>
+    <div class="VIZWeb_Main">
+        <div id="view"></div>
+    </div>
 </body>
 
 </html>

@@ -1,0 +1,38 @@
+.sideBar {
+    position: absolute;
+    width: 150px;
+    height: 100%;
+    box-shadow: -8px 0 18px -10px rgba(0, 0, 0, 0.3) inset;
+}
+
+.ui_title {
+    width: 100px;
+    height: 20px;
+    font-weight: bold;
+    padding: 20px 5px 15px 5px;
+    margin-left: 18px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-bottom: 5px solid #555;
+}
+
+.ui_button_side {
+    display: inline-flex;
+    align-items: center;
+    color: rgb(0, 0, 0);
+    width: 130px;
+    /* margin-left: 13px;
+    margin-top: 10px; */
+    cursor: pointer;
+    padding: 15px 10px 15px 10px;
+    /* border-radius: 8px; */
+}
+
+.ui_button_side:hover {
+    background-color: rgb(215, 215, 215);
+}
+
+.ui_button_side:active {
+    font-weight: bold;
+    background-color: rgb(190, 190, 190);
+}
