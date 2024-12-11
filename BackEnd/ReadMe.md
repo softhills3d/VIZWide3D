@@ -1,10 +1,10 @@
 # 프로젝트 소개
-이 프로젝트는 C#으로 작성된 서버 애플리케이션으로, HTTP 요청을 처리하고 Oracle 및 MSSQL 데이터베이스와 상호 작용하는 예제 코드입니다. 파일 업로드 및 다운로드, 데이터베이스 조회 등의 기능을 제공합니다.
+이 프로젝트는 C#으로 작성된 서버 애플리케이션으로, HTTP 요청을 처리하고 Oracle 및 MSSQL 데이터베이스와 상호 작용하는 예제 코드입니다. 파일 다운로드, 데이터베이스 조회 등의 기능을 제공합니다.
 
 ---
 
 ## 주요 기능
-- **파일 관리**: 서버를 통해 파일을 업로드, 다운로드 및 삭제할 수 있습니다.
+- **파일 관리**: 서버를 통해 파일을 다운로드 할 수 있습니다.
 - **데이터베이스 연동**: Oracle과 MSSQL 데이터베이스에서 데이터를 조회할 수 있습니다.
 - **HTTP 서버**: `Softhills.Net.HttpServerCore`를 사용하여 HTTP 요청을 처리합니다.
 
@@ -66,48 +66,14 @@
 http://IP_ADDRESS:PORT/SOFTHILLS?CMD=COMMAND&PARAM1=VALUE1&PARAM2=VALUE2
 ```
 
-#### 예제 요청
-- **SHIP 목록 가져오기**  
-  - `FILEKIND`: 파일 유형 ( 1: MERGE, 2: SIMPLIFY )
+#### 예제
+- **VIZW 다운로드**  
+  - `SHIP`: 호선 정보
+  - `BLOCK`: 블록 정보
+  - `NAME`: 파일 이름
+    - 파일 이름은 `/` 를 반드시 **포함** 하여야 합니다.
 ```
-http://localhost/SOFTHILLS?CMD=SHIP&FILEKIND=1
-```
-
-- **BLOCK 목록 가져오기**  
-  - `SHIP`: 호선 번호  
-  - `EXT`: 파일 확장자 ( viz, vizm, vizw )
-```
-http://localhost/SOFTHILLS?CMD=BLOCK&FILEKIND=1&EXT=viz&SHIP=3322
-```
-
-- **파일 다운로드**  
-  - `FILEKIND`: 파일 유형 ( 1: MERGE, 2: SIMPLIFY )
-  - `ALLOWEMPTY`: 파일이 없을 경우 빈 모델 허용 (1: 허용, 0: 비허용)  
-  - `BLOCK`: 블록 번호  
-  - `FORMAT`: 파일 형식 ( viz, vizm, vizw )
-```
-http://localhost/SOFTHILLS?CMD=STREAM&FILEKIND=1&ALLOWEMPTY=1&SHIP=3322&BLOCK=S21P0&FORMAT=viz
-```
-
-- **파일 업로드**  
-  - `FILEKIND`: 파일 유형 ( 1: MERGE, 2: SIMPLIFY )
-  - `ACCESSKEY`: 인증 키 (보안을 위해 실제 운영 시에는 안전하게 관리해야 합니다)
-  - `SHIP`: 호선 번호
-  - `BLOCK`: 블록 번호
-  - `UD`: 사용자 정의 값
-  - `BUFFER`: 업로드할 파일의 Base64 인코딩된 데이터
-```
-http://localhost/SOFTHILLS?CMD=UPLOAD&FILEKIND=1&ACCESSKEY=YOUR_ACCESS_KEY&SHIP=3322&BLOCK=S21P0&UD=BP18722&BUFFER=BASE64_ENCODED_DATA
-```
-
-- **파일 삭제** 
-  - `FILEKIND`: 파일 유형 ( 1: MERGE, 2: SIMPLIFY )
-  - `ACCESSKEY`: 인증 키 (보안을 위해 실제 운영 시에는 안전하게 관리해야 합니다)
-  - `SHIP`: 호선 번호
-  - `BLOCK`: 블록 번호
-  - `UD`: 사용자 정의 값
-```
-http://localhost/SOFTHILLS?CMD=DELETE&FILEKIND=1&ACCESSKEY=YOUR_ACCESS_KEY&SHIP=3322&BLOCK=S21P0&UD=BP18722
+http://localhost/SOFTHILLS?CMD=VIZW&SHIP=3380&BLOCK=A21P0&NAME=/A21P0_wh.vizw
 ```
 
 - **Oracle 데이터 조회**  
@@ -125,7 +91,7 @@ http://localhost/SOFTHILLS?CMD=GetSqlData
 ## 클래스 설명
 ### **Program.cs**
 - 서버의 진입점이며, HTTP 요청을 수신하고 처리합니다.
-- `ProcessSHIP`, `ProcessBLOCK`, `ProcessStream` 등의 메서드를 통해 각 기능을 구현합니다.
+- `ProcessVIZW` 등의 메서드를 통해 각 기능을 구현합니다.
 
 ### **OracleManager.cs**
 - Oracle 데이터베이스와의 통신을 담당합니다.
