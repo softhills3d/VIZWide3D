@@ -49,6 +49,9 @@
   <add key="DATABASE_SERVICE_NAME_TEST1" value="your_database_name" />
   <add key="DATABASE_USERID_TEST1" value="your_username" />
   <add key="DATABASE_PASSWORD_TEST1" value="your_password" />
+
+  <!-- Repository -->
+  <add key="REPOSITORY_BASE" value="D:\REPOSITORY\BASE"/>
 </appSettings>
 ```
 
