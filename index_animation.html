@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>VIZWebCore :: SOFTHILLS</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+    <script src="VIZCore3D/lib/jquery/jquery-3.2.1.js"></script>
+
+    <link rel="stylesheet" href="VIZCore3D/Resource/css/VIZCore.css">
+
+    <script type="module">
+        import VIZ3DCore from "./VIZCore3D/VIZCore.js";
+        import { VIZCore } from "./VIZCore3D/VIZCore.js";
+
+        let view = document.getElementById("view");
+        view.className = "VIZCore";
+        let vizcore = new VIZ3DCore(view);
+        //console.log("import - call");
+
+        let animation = () => {
+            // 이동경로 3D좌표 
+            let path = [
+                { x: 0, y: 0, z: 0 },
+                { x: -100, y: 0, z: 0 },
+                { x: -100, y: 100, z: 0 },
+                { x: 0, y: 100, z: 0 },
+            ]
+
+            // 이동경로 값을 new VIZCore.Vector3(x,y,z) 값으로 pathToVector에 할당
+            let pathToVector = path.map(position => new VIZCore.Vector3(position.x, position.y, position.z));
+
+            // 애니메이션 추가 함수
+            let add = function (keyRoot, key, ids, duration, start, end, rotateStart, rotateEnd, next) {
+                let item = vizcore.Main.Animation.GetAnimationItem();
+                
+                //애니메이션 관리 Key
+                item.keyRoot = "key" + keyRoot;
+                item.key = "key" + key;
+                // 애니메이션 대상 Object Ids
+                item.object = ids;
+                // 애니메이션 재생 시간
+                item.duration = duration;
+                
+                // 시작 위치
+                item.start.tx = start.x;
+                item.start.ty = start.y;
+                item.start.tz = start.z;
+                // 종료 위치
+                item.end.tx = end.x;
+                item.end.ty = end.y;
+                item.end.tz = end.z;
+             
+                // 연계 작업시 다음 애니메이션
+                let arrNext = [];
+                for (let i = 0; i < next.length; i++) {
+                    arrNext.push("key" + next[i]);
+                }
+                // 연계 작업 설정
+                item.next = arrNext;
+                item.start.cx = 0;
+                item.start.cy = 0;
+                item.start.cz = 0;
+                item.end.cx = 0;
+                item.end.cy = 0;
+                item.end.cz = 0;
+               
+                // 시작 회전 설정
+                item.start.ax = rotateStart.x;
+                item.start.ay = rotateStart.y;
+                item.start.az = rotateStart.z;
+           
+                // 종료 회전 설정
+                item.end.ax = rotateEnd.x;
+                item.end.ay = rotateEnd.y;
+                item.end.az = rotateEnd.z;
+
+                // 애니메이션 관리 목록 추가
+                vizcore.Main.Animation.SetAnimationItem(item);
+            };
+
+            let startAnim = () => {
+                // 애니메이션 keyIndex
+                let keyIndex = 0;
+
+                // 이동시킬 대상 찾기
+                let node = vizcore.Object3D.Find.GetNodeByName(
+                    'toycar'   // Keyword
+                    , true      // Full Match
+                );
+                
+                let nodeId = [];                               
+                for (let i = 0; i < node.length; i++) {
+                    nodeId.push(node[i].id);
+                }
+
+                // 이동 방향을 저장할 배열
+                let angle = [];
+                for (let i = 0; i < pathToVector.length; i++) {
+                    // 다음 위치로의 이동 방향 계산
+                    if (i == 3) {
+                        let dir = new VIZCore.Vector3().subVectors(new VIZCore.Vector3().copy(pathToVector[i]), new VIZCore.Vector3().copy(pathToVector[0]));
+                        angle.push((dir.get2DAngle() * 180.0 / Math.PI));
+                    } else {
+                        let dir = new VIZCore.Vector3().subVectors(new VIZCore.Vector3().copy(pathToVector[i]), new VIZCore.Vector3().copy(pathToVector[i + 1]));
+                        angle.push((dir.get2DAngle() * 180.0 / Math.PI));
+                    }
+                }
+
+                // 각각의 값을 통해 애니메이션 추가
+                // add(keyRoot, key, ids, duration, start, end, rotateStart, rotateEnd next);
+                add(keyIndex, keyIndex + 0, nodeId, 8000, path[0], path[1], new VIZCore.Vector3(0, 0, angle[0]), new VIZCore.Vector3(0, 0, angle[0]), [keyIndex + 1]);  //이동
+                add(keyIndex, keyIndex + 1, nodeId, 2000, path[1], path[1], new VIZCore.Vector3(0, 0, angle[0]), new VIZCore.Vector3(0, 0, angle[1]), [keyIndex + 2]);  //회전
+                add(keyIndex, keyIndex + 2, nodeId, 8000, path[1], path[2], new VIZCore.Vector3(0, 0, angle[1]), new VIZCore.Vector3(0, 0, angle[1]), [keyIndex + 3]);  //이동
+                add(keyIndex, keyIndex + 3, nodeId, 2000, path[2], path[2], new VIZCore.Vector3(0, 0, angle[1]), new VIZCore.Vector3(0, 0, angle[2]), [keyIndex + 4]);  //회전
+                add(keyIndex, keyIndex + 4, nodeId, 8000, path[2], path[3], new VIZCore.Vector3(0, 0, angle[2]), new VIZCore.Vector3(0, 0, angle[2]), [keyIndex + 5]);  //이동
+                add(keyIndex, keyIndex + 5, nodeId, 2000, path[3], path[3], new VIZCore.Vector3(0, 0, angle[2]), new VIZCore.Vector3(0, 0, angle[3]), [keyIndex + 6]);  //회전
+                add(keyIndex, keyIndex + 6, nodeId, 8000, path[3], path[0], new VIZCore.Vector3(0, 0, angle[3]), new VIZCore.Vector3(0, 0, angle[3]), [keyIndex + 7]);  //이동
+                add(keyIndex, keyIndex + 7, nodeId, 2000, path[0], path[0], new VIZCore.Vector3(0, 0, angle[3]), new VIZCore.Vector3(0, 0, angle[0]), []);              //회전
+
+                vizcore.Main.Animation.AddAnimationItem_Transform("key" + 0, "", undefined);
+                vizcore.Main.Animation.StartAnimation_Transform();
+            }
+
+
+
+            startAnim();
+
+            // 애니메이션 반복 재생 시, startAnim 함수 재실행 
+            setInterval(() => {
+                //startAnim();
+            }, 40000); // (interval = 애니메이션 총 재생시간)
+        }
+
+        let onSelectEvent = function (event) {
+            // 선택된 모델이 없음
+            if (event.data.id == -1) {
+                //console.log('선택된 모델이 없거나, 기존 선택상태가 해제됨.');
+            }
+            // 선택된 모델이 있음
+            else {
+                //console.log(event.data.id);
+            }
+        };
+
+        // 파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = function (e, loadType) {
+            console.log("Loading Completed :: ", e);
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE) {
+                console.log("onLoad Structure :: ", e);
+                // 구조정보 로딩 완료
+            }
+            if (loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH) {
+                console.log("onLoad Mesh :: ", e);
+                // 모델정보 로딩 완료
+
+                // 애니메이션 함수 호출(파일의 'MESH' 로딩 후, 적용)
+                animation();
+            }
+        };
+
+        let onConfiguration = () => {
+            // 초기 환경설정 변경
+            // VIZCore 경로 설정
+            vizcore.Configuration.Default.Path = "./VIZCore3D/";
+            // WebAssembly 경로 설정
+            vizcore.Configuration.Default.WebAssembly.Path = "./VIZCore3D/lib/shdcore/shdcore.wasm";
+        };
+
+        let onBefore = () => {
+        };
+
+        let onInit = () => {
+
+            // ContextMenu 사용
+            let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
+
+            vizcore.Model.OnStreamProgressChangedEvent(function (e) {
+                //console.log("Total : ",  e.data.total, "Current : ", e.data.current, "Percentage : ", e.data.percentage);
+            });
+
+            // Add Event Handler : Object Selected Event (모델 선택 이벤트)
+            vizcore.Object3D.OnObject3DSelected(onSelectEvent);
+
+            // View Info 확인
+            let OnViewDrawInfo = function (event) {
+                //console.log(event.data); 
+            }
+            vizcore.View.OnViewDrawInfoEvent(OnViewDrawInfo);
+
+            // 파일 열기
+            vizcore.Model.OpenHeader("VIZCore3D/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+
+            // 모델 바운드 박스 재계산 및 3D모델 갱신(카메라 재계산용)
+            setInterval(() => {
+                //vizcore.Object3D.RefreshBBox(); 
+                vizcore.Draw();
+                vizcore.Resize();
+                vizcore.Render();
+            }, 100);
+
+        };
+
+        let option = {
+            event: {
+                onInit: onInit,
+                onBefore: onBefore,
+                onConfiguration: onConfiguration,
+            }
+        }
+
+        vizcore.Init(option);
+    </script>
+</head>
+
+<body>
+    <div class="VIZWeb_Main">
+        <div id="view"></div>
+    </div>
+</body>
+
+</html>
