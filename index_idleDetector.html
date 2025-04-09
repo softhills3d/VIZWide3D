@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>VIZWebCore :: SOFTHILLS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+    <script src="VIZCore3D/lib/jquery/jquery-3.2.1.js"></script>
+    
+    <link rel="stylesheet" href="VIZCore3D/Resource/css/VIZCore.css">
+
+
+    <script type="module">
+        import VIZ3DCore from "./VIZCore3D/VIZCore.js";
+        import { VIZCore } from "./VIZCore3D/VIZCore.js";
+
+        let view = document.getElementById("view");
+        view.className = "VIZCore";
+        let vizcore = new VIZ3DCore(view);
+
+        let onSelectEvent = function (event) {
+            // 선택된 모델이 없음
+            if (event.data.id == -1) {
+                //console.log('선택된 모델이 없거나, 기존 선택상태가 해제됨.');
+            }
+            // 선택된 모델이 있음
+            else {
+                //console.log(event.data.id);
+            }
+        };
+
+        // 파일 로딩 완료 시점 확인
+        let onModelLoadingCompleted = function (e, loadType) {
+            console.log("Loading Completed :: ", e);
+            if(loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.STRUCTURE){
+                console.log("onLoad Structure :: ", e);
+                // 구조정보 로딩 완료
+            }
+            if(loadType === VIZCore.Enum.CONFIG_KEY.LOADER.COMPLETEDTIME.MESH){
+                console.log("onLoad Mesh :: ", e);
+                // 모델정보 로딩 완료
+            }           
+        };
+
+        let onConfiguration =()=>{
+            // 초기 환경설정 변경
+            // VIZCore 경로 설정
+            vizcore.Configuration.Default.Path = "./VIZCore3D/";
+            // WebAssembly 경로 설정
+            vizcore.Configuration.Default.WebAssembly.Path = "./VIZCore3D/lib/shdcore/shdcore.wasm";
+        };
+
+        let onBefore =()=>{
+        };
+
+        let idleTime = 0;  
+        let idleLimit = 10; // 기본 유휴 제한 시간 (10초)
+        let checkInterval = 1000; // 기본 검사 주기 (1초)
+        let idleTimer = null;
+
+        function resetIdleTimer() {
+            // 유휴 시간 초과 후 더 이상 체크하지 않음
+            if (idleTime >= idleLimit) return; 
+            idleTime = 0;
+        }
+
+        // 유휴 타이머 시작
+        function startIdleTimer() {
+            if (idleTimer !== null) {
+                clearInterval(idleTimer);
+            }
+
+            idleTime = 0;
+
+            idleTimer = setInterval(() => {
+                idleTime++;
+                console.log(`Idle time: ${idleTime}초`);
+
+                if (idleTime >= idleLimit) {
+                    clearInterval(idleTimer);
+                    idleTimer = null;
+
+                    console.log("유휴 시간이 초과");
+                    vizcore.Disconnect();
+                }
+            }, checkInterval);
+        }
+
+        const CreateUI = () => {
+            let ui = vizcore.UIElement;
+
+            //리본바
+            let ribbonbar = ui.GetRibbonbar();
+
+            let click = () => {
+                // 라이선스 서버 연결
+                vizcore.Connect();
+                startIdleTimer();
+            };
+
+            //버튼 오브젝트
+            let button = ui.GetObject(ui.Enum.OBJECT_TYPE.BUTTON);
+            button.id = "Button";
+            button.text = "Connect";
+            button.event.click = click;
+
+            //그룹 오브젝트
+            let group = ui.GetObject(ui.Enum.OBJECT_TYPE.GROUP);
+            group.id = "Group";
+            group.text = "Server";
+            group.style.size = ui.Enum.OBJECT_SIZE.SMALL;
+            group.buttons = [button];
+
+            //탭 오브젝트
+            let tab = ui.GetObject(ui.Enum.OBJECT_TYPE.TAB);
+            tab.id = "Tab";
+            tab.text = "License";
+            tab.groups = [group];
+
+            //앞순서에 탭 오브젝트 추가
+            ribbonbar.AddInsertTab(tab);
+        }
+
+        // 유저 입력 이벤트 등록 (페이지 전체)
+        function registerIdleEvents() {
+            ["mousemove", "keydown", "scroll", "click"].forEach(eventType => {
+                document.addEventListener(eventType, resetIdleTimer);
+            });
+        }
+
+        let onInit = ()=>{
+            
+            // ContextMenu 사용
+            let context = new vizcore.ContextMenu(view, vizcore, VIZCore);
+
+            // Add Event Handler : Object Selected Event (모델 선택 이벤트)
+            vizcore.Object3D.OnObject3DSelected(onSelectEvent);
+
+            // 파일 열기
+            vizcore.Model.OpenHeader("VIZCore3D/Model/toycar/vizw/toycar_wh.vizw", "Sample", onModelLoadingCompleted);
+
+            // 리본 탭 생성
+            CreateUI();
+
+            // 사용자 입력 감지 이벤트 등록
+            registerIdleEvents();
+
+            // 유휴 타이머 시작
+            startIdleTimer(); 
+        };
+
+        let option = {
+                event : {
+                    onInit : onInit,
+                    onBefore : onBefore,
+                    onConfiguration : onConfiguration,
+                }
+            }
+
+        vizcore.Init(option);
+    </script>
+</head>
+<body>
+    <div class="VIZWeb_Main">
+        <div id="view"></div>
+    </div>
+</body>
+</html>
